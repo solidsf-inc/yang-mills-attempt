@@ -1,0 +1,775 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,longtable,array}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\def\UrlBreaks{\do\_\do\-\do\/\do\.}
+\def\UrlBigBreaks{}
+\newcommand{\lean}[1]{\nolinkurl{#1}}
+\input{generated.tex}
+
+\numberwithin{equation}{subsection}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[subsection]
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}[theorem]{Problem}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\SU}{\mathrm{SU}}
+
+\title{\textbf{Toward a Proof of the Yang--Mills\\ Existence and Mass Gap Problem --\\
+The Wilson Lattice Measure in Lean 4:\\ Established Results and Open Obligations}}
+\author{solidSF Research Team using Jesse v2.2.0, Google Gemini Argon,\\ Claude Opus 5.5, \& OpenAI GPT-6 Astra}
+\date{9 November 2026 \\ \small Version \pkgversion}
+
+\begin{document}
+\maketitle
+\raggedright\setlength{\parindent}{1.5em}
+
+\begin{abstract}
+\raggedright
+This paper does not prove the Yang--Mills existence and mass gap conjecture, and it does not
+prove a positive mass gap for any quantum Yang--Mills theory. It is the record of an attempt.
+We report what a machine-checked campaign on the four-dimensional $\SU(2)$ Wilson lattice
+measure established, which obligations it left open, and why the automated search was stopped
+on 9 November 2026: it had drifted into reward hacking, producing theorems that satisfied its
+checks without advancing the problem. We publish the whole Lean~4 corpus of the campaign,
+\pkgmodules{} modules and \pkglines{} lines, compiled from a clean copy with zero \texttt{sorry}
+declarations and only Lean's standard axioms (\texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound}). A kernel check certifies each stated implication and says nothing about
+whether a statement means what its name suggests, so we separate the corpus into results we
+stand behind and material published as it is, and we document the failure patterns with named
+examples. The results we stand behind are exact
+finite-volume statements about the actual Wilson measure (gauge and translation invariance,
+Osterwalder--Seiler reflection positivity, a two-sided volume law for the Haar mass of
+low-action configurations, and a volume-uniform action-density bound), weak compactness of the
+finite-volume laws, an abstract resolvent theorem for self-adjoint generators, and
+negative controls that refute tempting shortcuts on explicit models. The open part is every
+step that the conjecture actually needs: uniform multiscale control, a unique continuum limit,
+full Euclidean covariance, clustering, nontriviality, and a positive physical decay rate. We
+list those obligations as numbered Problems and say for each what blocked us.
+Section~\ref{sec:hacking} describes how the automated search went wrong and what now guards
+against it.
+\end{abstract}
+
+\noindent\textbf{Key words.} Yang--Mills theory, lattice gauge theory, Wilson action, reflection
+positivity, mass gap, formal verification, Lean 4.
+
+\noindent\textbf{AMS subject classifications.} 81T13, 81T25, 81T08, 60B10, 68V15.
+
+\tableofcontents
+
+\section*{What is actually proved}
+\addcontentsline{toc}{section}{What is actually proved}
+
+Every row is a declaration in the published library. ``Wilson measure'' means the probability
+measure with density $e^{-\beta S}/Z$ against normalized product Haar measure on the links of
+the periodic lattice $(\Z/L)^4$, with $S$ the $\SU(2)$ plaquette action. None of the rows is a
+statement about a continuum quantum field theory.
+
+{\small
+\begin{longtable}{@{}>{\raggedright}p{0.08\textwidth}>{\raggedright}p{0.29\textwidth}>{\raggedright}p{0.36\textwidth}>{\raggedright\arraybackslash}p{0.17\textwidth}@{}}
+\toprule
+Result & Hypotheses & Conclusion & Kind \\
+\midrule
+\endhead
+2.1.1 & finite $L$, any $\beta$ & the Wilson action is invariant under every lattice gauge transformation & exact, finite volume \\
+2.2.1 & $\beta\ge 0$, $\delta>0$ & $P_\beta(S\ge\varepsilon)\le e^{-\beta(\varepsilon-\delta)}/c(L,\delta)$ with $c$ the Haar mass of $\{S<\delta\}$ & exact, finite volume \\
+2.2.2 & $0<\delta\le 96L^4$; and $L\ge 2$, $4\delta\le m(L)$ & two-sided bounds on $c(L,\delta)$; $\log(1/c)$ is of order $L^4\log L$ & exact, finite volume \\
+2.2.3 & $0<\delta<\varepsilon$, $\delta\le 96$, one fixed $\beta$ above an explicit threshold & $P_\beta(S\ge\varepsilon L^4)$ is bounded uniformly in $L$ and tends to $0$ as $L\to\infty$ & exact, uniform in volume \\
+2.2.4 & $\varepsilon>0$, fixed $\beta\ge 0$ & $P_\beta(S\ge\varepsilon)\to 1$ as $L\to\infty$ & exact; limits 2.2.3 \\
+2.3.1 & any sides $L_n$, couplings $\beta_n\ge 0$ & a subsequence of the periodically extended laws converges weakly; the limit is invariant under global gauge rotations and integer translations & exact; compactness \\
+2.4.1 & $L=2M$, $\beta\ge 0$, $H$ continuous and supported on the closed positive half & $\langle (H\circ\Theta)\,H\rangle_\beta\ge 0$ & exact, finite volume \\
+2.5.1 & $L\ge 2$, $\beta\ge 0$, $0<t\le\frac12$ & $P_\beta(s(U_p)\ge t)\ge 1/(1+e^{24\beta t})$ for every plaquette & exact, uniform in volume \\
+2.5.2 & as 2.5.1, $P$ a separated family of plaquettes & $P_\beta(\text{all } s(U_p)<t)\le\exp(-|P|/(1+e^{24\beta t}))$ & exact, uniform in volume \\
+2.5.3 & $\beta=b\log k$, threshold $2\varepsilon/\sqrt\beta$ & the event that $k^3$ face plaquettes are all small has probability tending to $0$, uniformly in $L\ge 2k$ & exact, uniform in volume \\
+2.6.1 & flat background, any $L$ & the forest-slice curl form is bounded below, and its inverse decays geometrically in graph distance & exact, linear algebra \\
+2.6.2 & weight $e^{t\cos\theta}\sin^2\theta$ on $(0,\pi)$, any real $t$ & Poincar\'e inequality with constant $3$ & exact, one variable \\
+3.1.1 & $A$ self-adjoint, $\langle u,Au\rangle\ge m\|u\|^2$ on its domain, $E<m$ & $A-E$ has a bounded everywhere-defined inverse of norm at most $1/(m-E)$ & abstract Hilbert space \\
+3.1.2 & $A$ self-adjoint generator of $T(t)$ with $\|T(t)u\|\le e^{-mt}\|u\|$ on its domain & same resolvent conclusion & abstract Hilbert space \\
+4.1.1--4.1.4 & none & four false strengthenings are refuted on explicit models & negative control \\
+\bottomrule
+\end{longtable}}
+
+\noindent Results 3.1.1 and 3.1.2 contain no lattice object. They become statements about
+Yang--Mills only after the physical Hilbert space, its generator and the decay estimate have
+been constructed, and none of those has been.
+
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+% jesse:intro:purpose
+\paragraph{Purpose.} We present the verified residue of an attempt on the following problem
+of Jaffe and Witten~\cite{JaffeWitten}: for every compact simple gauge group $G$, prove that a
+nontrivial quantum Yang--Mills theory exists on $\R^4$, satisfying the axioms of
+Osterwalder--Schrader or Wightman, and that its Hamiltonian has spectrum contained in
+$\{0\}\cup[\Delta,\infty)$ for some $\Delta>0$. We do not solve it. The purpose of the paper is to
+make the attempt checkable: every claim that we keep is a kernel-checked Lean~4 declaration
+that anyone can rebuild, and every claim that we could not keep is stated as an open Problem.
+
+% jesse:intro:history
+\paragraph{History.} Wilson~\cite{Wilson} introduced the lattice regularization used here.
+Osterwalder and Seiler~\cite{OsterwalderSeiler} proved reflection positivity of the lattice
+measure and exponential clustering at strong coupling, where polymer expansions of the kind
+analysed by Koteck\'y and Preiss~\cite{KoteckyPreiss} converge. Ba\l{}aban~\cite{Balaban}
+controlled the ultraviolet problem by a multiscale renormalization group analysis on a
+finite-volume torus. The reconstruction of a quantum theory from Euclidean correlation
+functions is due to Osterwalder and Schrader~\cite{OsterwalderSchrader}. No argument is known
+that joins the weak-coupling ultraviolet regime to a positive physical mass in the continuum.
+
+% jesse:intro:program
+\paragraph{Basic idea of the program.} Fix the $\SU(2)$ Wilson measure on a periodic lattice,
+prove exact statements about that measure in a proof assistant, take limits only through
+theorems whose hypotheses name what is still missing, and attach to every hypothesis a negative
+control showing that it does not follow from the others.
+
+% jesse:intro:parts
+\paragraph{Main parts in more detail.} The program has six parts.
+(i) \emph{Uniform weak-coupling control}: bounds on the block-averaged Wilson integral that are
+uniform in volume. Section~\ref{sec:wilson} serves it; its status is Problem~\ref{prob:rg}.
+(ii) \emph{A unique continuum limit} of renormalized Wilson loops. Theorem~\ref{thm:compact}
+gives subsequential limits only; see Problem~\ref{prob:limit}.
+(iii) \emph{Euclidean covariance and reflection positivity} of the limit.
+Theorem~\ref{thm:rp} gives positivity at finite volume; see Problem~\ref{prob:cov}.
+(iv) \emph{Clustering and nontriviality}; see Problem~\ref{prob:cluster}.
+(v) \emph{A positive physical decay rate} and the spectral gap of the reconstructed
+Hamiltonian. Section~\ref{sec:resolvent} supplies the abstract last step; see
+Problem~\ref{prob:gap}.
+(vi) \emph{All compact simple groups}; see Problem~\ref{prob:groups}.
+
+% jesse:intro:main-results
+\paragraph{Main results.} Theorems~\ref{thm:gauge}--\ref{thm:collapse} are exact statements about
+the finite-volume Wilson measure, and Theorems~\ref{thm:forest} and~\ref{thm:radial} are exact
+auxiliary estimates. Theorems~\ref{thm:resolvent} and~\ref{thm:resolventdecay}
+are abstract. Propositions~\ref{prop:mix}--\ref{prop:tails} are negative controls.
+
+% jesse:intro:novelty
+\paragraph{What is new, and what was substituted.} Gauge invariance, reflection positivity and
+weak compactness are known mathematics; the contribution is their formal verification for one
+fixed definition of the measure. The explicit two-sided volume law of
+Theorem~\ref{thm:volume} and the explicit threshold of Theorem~\ref{thm:density} were derived
+for this library, as were the plaquette tail bounds of
+Theorems~\ref{thm:ptail}--\ref{thm:collapse}; we have not found the constants in the literature
+and make no claim that the orders of growth are new. The resolvent theorems are standard functional analysis. Nothing
+here re-derives a theorem of Ba\l{}aban, of Osterwalder and Seiler beyond the stated
+positivity, or of Koteck\'y and Preiss.
+
+% jesse:intro:scope
+\paragraph{Audience and self-containment.} The paper is for readers who want to check the
+claims rather than trust them. The archive contains the Lean sources, the project files and a
+build log. Pins: toolchain \texttt{\pkgtoolchain}; Mathlib revision \pkgmathlibb; source revision \pkgcommitb.
+
+% jesse:intro:acknowledgments
+\paragraph{Acknowledgments.} The library depends on Mathlib~\cite{Mathlib} and
+Lean~4~\cite{Lean4}.
+
+\section{The model}\label{sec:model}
+
+In this chapter, we fix the objects that every later statement refers to.
+
+\subsection{Lattice, links and action}
+
+\begin{definition}[Jesse; \cite{Wilson}]\label{def:wilson}
+Let $L\ge 1$. A \emph{gauge configuration} assigns an element $U_e\in\SU(2)$ to every link $e$ of
+the periodic lattice $(\Z/L)^4$. For a plaquette $p$ let $U_p$ be the ordered product of the four
+link variables around $p$, and put $s(U_p)=1-\tfrac12\operatorname{Re}\operatorname{tr}U_p$. The
+\emph{Wilson action} at coupling $\beta$ is $S_\beta(U)=\beta\sum_p s(U_p)$, and $S=S_1$. The
+\emph{Wilson measure} is the probability measure $Z_\beta^{-1}e^{-S_\beta}\,d\mu$ with $\mu$ the
+normalized product Haar measure. In Lean these are \texttt{wilson\allowbreak{}Action},
+\texttt{gauge\allowbreak{}Haar\allowbreak{}Measure}, \texttt{wilson\allowbreak{}Measure} and \texttt{wilson\allowbreak{}Probability}.
+\end{definition}
+
+\section{Exact results for the finite-volume Wilson measure}\label{sec:wilson}
+
+In this chapter, we state the results that hold for the measure of
+Definition~\ref{def:wilson} with no further hypothesis.
+
+\subsection{Gauge invariance}
+
+\begin{theorem}[Jesse; \cite{Wilson}]\label{thm:gauge}
+For every $L$, every $\beta$ and every lattice gauge transformation $g$, $S_\beta(g\cdot U)=S_\beta(U)$.
+\end{theorem}
+\begin{proof}
+A gauge transformation conjugates each plaquette holonomy by the group element at its base
+site, and the trace is invariant under conjugation. \emph{Formal verification:}
+\texttt{wilson\allowbreak{}Action\_\allowbreak{}gauge\allowbreak{}Transform} in \texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Lattice\allowbreak{}Yang\allowbreak{}Mills.\allowbreak{}lean}; kernel
+accepted; axioms \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}; source digest
+in Appendix~\ref{app:files}.
+\end{proof}
+
+\subsection{Action tails and the volume law}
+
+Write $P_\beta$ for the Wilson measure on the lattice of side $L$ and
+$c(L,\delta)=\mu\{S<\delta\}$.
+
+\begin{theorem}[Jesse]\label{thm:tail}
+If $\beta\ge 0$ and $\delta>0$ then, for every real $\varepsilon$,
+\begin{equation}\label{eq:tail}
+P_\beta\bigl(S\ge\varepsilon\bigr)\;\le\;\frac{e^{-\beta(\varepsilon-\delta)}}{c(L,\delta)} .
+\end{equation}
+\end{theorem}
+\begin{proof}
+Bound the numerator by $e^{-\beta\varepsilon}$ and the partition function from below by its
+integral over $\{S<\delta\}$. \emph{Formal verification:} \texttt{haar\allowbreak{}Wilson\allowbreak{}Measure\_\allowbreak{}action\_\allowbreak{}tail}
+in \texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Weak\allowbreak{}Coupling.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{theorem}[Jesse]\label{thm:volume}
+Let $N=4L^4$ be the number of links and $m(L)=L^3\lfloor L/2\rfloor$. If $0<\delta\le 96L^4$ then
+\begin{equation}\label{eq:lower}
+\Bigl(\frac{\delta}{2400\,L^4}\Bigr)^{2N}\;\le\;c(L,\delta),
+\end{equation}
+and if $L\ge 2$ and $4\delta\le m(L)$ then
+\begin{equation}\label{eq:upper}
+\log c(L,\delta)\;\le\;m(L)\log 2-\frac{m(L)}{4}\log\frac{m(L)}{4\delta}.
+\end{equation}
+\end{theorem}
+\begin{proof}
+For \eqref{eq:lower}, cover $\SU(2)$ by translates of a small neighbourhood of the identity to
+bound the single-link mass from below, and note that four links close to the identity give a
+plaquette of small action. For \eqref{eq:upper}, choose $m(L)$ links each lying in exactly one
+of a family of disjoint plaquettes, integrate over those links first, and apply a union bound.
+\emph{Formal verification:} \texttt{haar\allowbreak{}Vacuum\allowbreak{}Sublevel\allowbreak{}Mass\_\allowbreak{}ge} and
+\texttt{log\_\allowbreak{}haar\allowbreak{}Vacuum\allowbreak{}Sublevel\allowbreak{}Mass\_\allowbreak{}le} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Uniform\allowbreak{}Haar\allowbreak{}Neighbourhood.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{remark}
+By \eqref{eq:lower} and \eqref{eq:upper} the entropy cost $\log(1/c(L,\delta))$ at a fixed
+threshold $\delta$ is of order $L^4\log L$. Hence the right side of \eqref{eq:tail} cannot be
+made small uniformly in $L$ at fixed $\beta$ and fixed $\delta$.
+\end{remark}
+
+\begin{theorem}[Jesse]\label{thm:density}
+Let $0<\delta<\varepsilon$ with $\delta\le 96$ and let $\beta>8\log(2400/\delta)/(\varepsilon-\delta)$.
+Then for every $L\ge 1$
+\begin{equation}\label{eq:density}
+P_\beta\bigl(S\ge\varepsilon L^4\bigr)\;\le\;\exp\!\bigl(-(\beta(\varepsilon-\delta)-8\log(2400/\delta))\bigr),
+\end{equation}
+and the left side tends to $0$ as $L\to\infty$ at this fixed $\beta$.
+\end{theorem}
+\begin{proof}
+Apply Theorem~\ref{thm:tail} at the threshold $\delta L^4$, where the lower volume law has a
+base that does not depend on $L$. \emph{Formal verification:}
+\texttt{haar\allowbreak{}Wilson\allowbreak{}Measure\_\allowbreak{}density\_\allowbreak{}tail\_\allowbreak{}uniform\_\allowbreak{}explicit} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Uniform\allowbreak{}Haar\allowbreak{}Neighbourhood.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{theorem}[Jesse]\label{thm:one}
+For every $\varepsilon>0$ and every fixed $\beta\ge 0$, $P_\beta(S\ge\varepsilon)\to 1$ as $L\to\infty$.
+\end{theorem}
+\begin{proof}
+A lower bound on $\log Z_\beta$ of order $-L^4\log(\beta+1)$ shows that the sublevel
+$\{S<\varepsilon\}$ has vanishing probability. \emph{Formal verification:}
+\texttt{haar\allowbreak{}Wilson\allowbreak{}Measure\_\allowbreak{}action\_\allowbreak{}tail\_\allowbreak{}tendsto\_\allowbreak{}one\_\allowbreak{}fixed\_\allowbreak{}coupling}, same module; kernel accepted;
+standard axioms.
+\end{proof}
+
+\begin{remark}[Scope]
+Theorem~\ref{thm:density} controls the average plaquette energy. It gives no information on
+correlations, on a renormalization trajectory or on a mass, and
+Theorem~\ref{thm:one} shows that it cannot be upgraded to a bound on the total action.
+\end{remark}
+
+\subsection{Weak limits and their symmetries}
+
+\begin{theorem}[Jesse; Prokhorov]\label{thm:compact}
+Let $L_n\ge 1$ and $\beta_n\ge 0$ be arbitrary sequences and extend each finite-volume Wilson
+measure periodically to the space of $\SU(2)$-valued functions on the links of $\Z^4$. Then
+some subsequence converges weakly to a probability measure $\nu$, the Wilson expectations of
+every continuous function converge to its $\nu$-integral along that subsequence, and $\nu$ is
+invariant under every global gauge rotation and every translation in $\Z^4$.
+\end{theorem}
+\begin{proof}
+The configuration space is a countable product of compact metric spaces, so the set of
+probability measures is sequentially compact. The two symmetries hold at each finite volume and
+are implemented by continuous maps, so they pass to weak limits. \emph{Formal verification:}
+\texttt{periodic\allowbreak{}Wilson\allowbreak{}Probability\_\allowbreak{}symmetric\_\allowbreak{}subsequence} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Continuum\allowbreak{}Compactness.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{remark}[Scope]
+The limit lives on unscaled lattice links. It is not a continuum field, it need not be unique,
+and with $L_n=1$, $\beta_n=0$ the theorem applies to a constant sequence
+(\texttt{tests/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Six\allowbreak{}Wave\allowbreak{}Scope\allowbreak{}Control.\allowbreak{}lean}).
+\end{remark}
+
+\subsection{Reflection positivity}
+
+\begin{theorem}[Jesse; \cite{OsterwalderSeiler}]\label{thm:rp}
+Let $L=2M$, $\beta\ge 0$ and let $\Theta$ be the reflection $x_0\mapsto -x_0$ acting on
+configurations. If $H$ is a continuous real function of the configuration that depends only on
+the links of the closed half $0\le x_0\le M$, then
+\begin{equation}\label{eq:rp}
+\int H(\Theta U)\,H(U)\;dP_\beta(U)\;\ge\;0 .
+\end{equation}
+\end{theorem}
+\begin{proof}
+Split the action into the part supported in the positive half and its reflection, and write
+the integral as the integral over the links of the reflection hyperplanes of a square.
+\emph{Formal verification:} \texttt{wilson\_\allowbreak{}reflection\_\allowbreak{}positive} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Osterwalder\allowbreak{}Schrader\allowbreak{}Inheritance.\allowbreak{}lean}; kernel accepted; standard
+axioms.
+\end{proof}
+
+\subsection{Plaquette tails and the small-field event}
+
+\begin{theorem}[Jesse]\label{thm:ptail}
+Let $L\ge 2$, $\beta\ge 0$ and $0<t\le\frac12$. For every plaquette $p$,
+\begin{equation}\label{eq:ptail}
+P_\beta\bigl(s(U_p)\ge t\bigr)\;\ge\;\frac{1}{1+e^{24\beta t}} ,
+\end{equation}
+and if $\beta\ge\frac1{12}$ then the expectation of $s(U_p)$ is at least $1/(24(1+e)\beta)$.
+\end{theorem}
+\begin{proof}
+In $\SU(2)$ the element $g+g^{-1}$ is a scalar, so moving one link by $g$ and by $g^{-1}$
+changes the action with no first-order term. Convexity of the exponential turns this into a
+transfer of mass between events. \emph{Formal verification:} \texttt{wilson\_\allowbreak{}plaquette\_\allowbreak{}tail} and
+\texttt{wilson\_\allowbreak{}plaquette\_\allowbreak{}expectation\_\allowbreak{}lower} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Wilson\allowbreak{}Plaquette\allowbreak{}Tail.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{theorem}[Jesse]\label{thm:tower}
+Under the hypotheses of Theorem~\ref{thm:ptail}, let $P$ be a finite family of plaquettes whose
+first links avoid each other's boundaries. Then
+\begin{equation}\label{eq:tower}
+P_\beta\bigl(s(U_p)<t\text{ for all }p\in P\bigr)\;\le\;\exp\!\Bigl(-\frac{|P|}{1+e^{24\beta t}}\Bigr).
+\end{equation}
+\end{theorem}
+\begin{proof}
+Apply the mass transfer of Theorem~\ref{thm:ptail} one plaquette at a time, on an event the
+moved link cannot see. \emph{Formal verification:} \texttt{wilson\_\allowbreak{}small\allowbreak{}Field\_\allowbreak{}tower} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Wilson\allowbreak{}Small\allowbreak{}Field.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{theorem}[Jesse]\label{thm:collapse}
+Let $b,\varepsilon,\delta>0$. There is $k_0$ such that for all $k\ge k_0$ and all $L\ge 2k$, at
+coupling $\beta=b\log k$ the event that all $k^3$ plaquettes of a three-dimensional face have
+$s(U_p)<2\varepsilon/\sqrt{\beta}$ has probability at most $\delta$.
+\end{theorem}
+\begin{proof}
+Insert $t=2\varepsilon/\sqrt\beta$ into \eqref{eq:tower}; the exponent $k^3/(1+e^{48\varepsilon\sqrt{b\log k}})$
+tends to infinity. \emph{Formal verification:} \texttt{wilson\_\allowbreak{}small\allowbreak{}Field\_\allowbreak{}collapse}, same module;
+kernel accepted; standard axioms.
+\end{proof}
+
+\begin{remark}[Scope]
+Theorem~\ref{thm:collapse} is an obstruction, not a step forward: a renormalization argument
+cannot assume that every plaquette of a block of fixed physical size is small. Large fields
+must be treated, which is the hard part of Problem~\ref{prob:rg}.
+\end{remark}
+
+\subsection{Two auxiliary estimates}
+
+\begin{theorem}[Jesse]\label{thm:forest}
+On the fine lattice $(\Z/2L)^4$ with a tree gauge that leaves 45 free links per cell, the
+quadratic form $Q(a)=\sum_p(\operatorname{curl}a)_p^2$ on functions of the free links satisfies
+$\frac1{20}\sum a^2\le Q(a)\le 24\sum a^2$, and the inverse of its matrix has entries bounded by
+$20\,(479/480)^{d}$ in the distance $d$ of the conflict graph.
+\end{theorem}
+\begin{proof}
+The lower bound uses an explicit table of plaquette fillings; decay follows from a Neumann
+series for a sparse positive matrix. \emph{Formal verification:} \texttt{forest\allowbreak{}Hessian\_\allowbreak{}lower},
+\texttt{forest\allowbreak{}Hessian\_\allowbreak{}upper} and \texttt{forest\allowbreak{}Hessian\_\allowbreak{}inverse\_\allowbreak{}decay} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Forest\allowbreak{}Slice\allowbreak{}Hessian.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{theorem}[Jesse]\label{thm:radial}
+Let $w(\theta)=e^{t\cos\theta}\sin^2\theta$ on $(0,\pi)$ with $t$ real. If $u$ is continuously
+differentiable with $\int u\,w=0$, then $3\int u^2w\le\int u'^2w$.
+\end{theorem}
+\begin{proof}
+A dual weighted Hardy argument. \emph{Formal verification:} \texttt{radial\_\allowbreak{}poincare} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Wilson\allowbreak{}Link\allowbreak{}Radial\allowbreak{}Poincare.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{remark}[Scope]
+Theorem~\ref{thm:forest} concerns the flat background only; it is not shown to be the Hessian
+of the Wilson action in any gauge. In Theorem~\ref{thm:radial} the weight is what the one-link
+Wilson weight would become in polar coordinates on $\SU(2)$; that change of variables is not
+formalized, so the theorem is a statement about one real variable.
+\end{remark}
+
+\section{An abstract resolvent theorem}\label{sec:resolvent}
+
+In this chapter, we record the functional-analytic step that would turn a decay estimate into a
+spectral gap. It contains no lattice object.
+
+\subsection{Coercivity and decay}
+
+\begin{theorem}[Jesse; standard]\label{thm:resolvent}
+Let $A$ be a densely defined self-adjoint operator on a complex Hilbert space with
+$\operatorname{Re}\langle u,Au\rangle\ge m\|u\|^2$ for all $u$ in its domain, and let $E<m$ be
+real. Then there is a bounded operator $R$ defined everywhere with $(A-E)Rf=f$ for all $f$,
+$R(A-E)u=u$ for all $u$ in the domain, and
+\begin{equation}\label{eq:res}
+\|R\|\le\frac{1}{m-E}.
+\end{equation}
+\end{theorem}
+\begin{proof}
+Coercivity gives $\|(A-E)u\|\ge(m-E)\|u\|$, so the range is closed because the graph is
+complete; self-adjointness shows that the orthogonal complement of the range is zero.
+\emph{Formal verification:} \texttt{self\allowbreak{}Adjoint\_\allowbreak{}resolvent\_\allowbreak{}below\_\allowbreak{}coercive\_\allowbreak{}bound} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Physical\allowbreak{}Gap.\allowbreak{}lean}; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{theorem}[Jesse; standard]\label{thm:resolventdecay}
+Let $A$ be self-adjoint and let $T(t)$ be bounded operators with $T(0)u=u$, right derivative
+$-Au$ at $t=0$, and $\|T(t)u\|\le e^{-mt}\|u\|$ for $t>0$, for all $u$ in the domain of $A$.
+Then the conclusion of Theorem~\ref{thm:resolvent} holds for every real $E<m$.
+\end{theorem}
+\begin{proof}
+Differentiating $\|T(t)u\|^2\le e^{-2mt}\|u\|^2$ at $t=0$ gives the coercivity hypothesis of
+Theorem~\ref{thm:resolvent}. \emph{Formal verification:}
+\texttt{self\allowbreak{}Adjoint\_\allowbreak{}resolvent\_\allowbreak{}of\_\allowbreak{}evolution\_\allowbreak{}decay}, same module; kernel accepted; standard axioms.
+\end{proof}
+
+\begin{remark}[Assumptions]
+Self-adjointness, the domain, the generator identity and the decay estimate are hypotheses.
+For Yang--Mills each of them is open. The same module contains a declaration,
+\texttt{j14\_\allowbreak{}h2h\_\allowbreak{}six\_\allowbreak{}wave\_\allowbreak{}master\_\allowbreak{}physical\_\allowbreak{}gap\_\allowbreak{}and\_\allowbreak{}compact\_\allowbreak{}simple\_\allowbreak{}group\_\allowbreak{}synthesis}, whose name
+suggests more than it proves: its hypotheses include the decay rate and it uses no
+construction from Section~\ref{sec:wilson}. We keep it in the archive so that the audit trail
+is complete, and we do not count it as a result.
+\end{remark}
+
+\section{Negative controls}\label{sec:controls}
+
+In this chapter, we list statements that would have shortened the route and are false.
+
+\subsection{Four refuted shortcuts}
+
+\begin{proposition}[Jesse]\label{prop:mix}
+Along the explicit dyadic cutoff path of the library, it is not the case that the joint
+Wilson-loop laws are eventually time mixing. Hence mixing of a limit cannot be inherited from
+the cutoff laws.
+\end{proposition}
+\begin{proof}
+\emph{Formal verification:} \texttt{dyadic\_\allowbreak{}cutoffs\_\allowbreak{}not\_\allowbreak{}eventually\_\allowbreak{}mixing} in
+\texttt{tests/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Osterwalder\allowbreak{}Schrader\allowbreak{}Inheritance\allowbreak{}Negative\allowbreak{}Control.\allowbreak{}lean}; kernel accepted.
+\end{proof}
+
+\begin{proposition}[Jesse]\label{prop:trivial}
+There is a law on the common loop space that is reflection positive, invariant under all the
+symmetries considered and time mixing, and is trivial.
+\end{proposition}
+\begin{proof}
+The constant Dirac law. \emph{Formal verification:} \texttt{constant\allowbreak{}Law\_\allowbreak{}trivial}, same file;
+kernel accepted.
+\end{proof}
+
+\begin{proposition}[Jesse]\label{prop:conv}
+Tightness of the joint Wilson-loop laws does not imply their convergence along every cutoff
+path: an oscillating path has two limit points.
+\end{proposition}
+\begin{proof}
+\emph{Formal verification:} \texttt{convergence\_\allowbreak{}obligation\_\allowbreak{}not\_\allowbreak{}automatic} in
+\texttt{tests/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Renormalized\allowbreak{}Observable\allowbreak{}Limits\allowbreak{}Negative\allowbreak{}Control.\allowbreak{}lean}; kernel accepted.
+\end{proof}
+
+\begin{proposition}[Jesse]\label{prop:tails}
+Unbounded renormalization factors destroy the uniform tail condition that is equivalent to
+tightness.
+\end{proposition}
+\begin{proof}
+\emph{Formal verification:} \texttt{not\_\allowbreak{}tail\allowbreak{}Obligation\_\allowbreak{}growing\allowbreak{}Factors}, same file; kernel accepted.
+\end{proof}
+
+\section{The route to the full conjecture}\label{sec:route}
+
+In this chapter, we state what is missing. The library names the missing inputs as fields of one
+structure, \texttt{Obligations\allowbreak{}Except\allowbreak{}Reflection} in
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Renormalized\allowbreak{}Observable\allowbreak{}Limits.\allowbreak{}lean}; every field is an
+undischarged hypothesis.
+
+\subsection{Open obligations}
+
+\begin{problem}[Uniform multiscale control]\label{prob:rg}
+\emph{Requires:} an identity for each block-averaged law and a norm for the whole remainder that
+stays bounded through a number of renormalization steps that diverges as the lattice spacing
+tends to zero, uniformly in volume and including large fields. \emph{The library provides:} the
+single-step fluctuation remainder at fixed volume and Theorems~\ref{thm:tail}--\ref{thm:one}.
+\emph{Obstruction:} every estimate we proved is either at fixed volume or controls only the
+action density; a single-link oscillation bound below one does not give a contraction, and a
+four-link parity example shows the inference fails.
+\end{problem}
+
+\begin{problem}[Unique continuum limit]\label{prob:limit}
+\emph{Requires:} tightness of renormalized Wilson loops with the unbounded perimeter and corner
+factors expected in four dimensions, and agreement of all limit laws. \emph{The library
+provides:} Theorem~\ref{thm:compact} and the equivalence of tightness with a tail condition.
+\emph{Obstruction:} Propositions~\ref{prop:conv} and~\ref{prop:tails}.
+\end{problem}
+
+\begin{problem}[Euclidean covariance and positivity of the limit]\label{prob:cov}
+\emph{Requires:} reflection positivity for the full positive-time algebra of the limit, and
+invariance under all translations and rotations of $\R^4$. \emph{The library provides:}
+Theorem~\ref{thm:rp} and the symmetries of Theorem~\ref{thm:compact}. \emph{Obstruction:}
+positivity at a finite periodic cutoff holds only for observables in a half lattice, so it must
+be passed to the limit observable by observable, and a regularity hypothesis is then needed;
+only lattice symmetries are available.
+\end{problem}
+
+\begin{problem}[Clustering and nontriviality]\label{prob:cluster}
+\emph{Requires:} decay of correlations in the limit and one physical observable with nonzero
+connected correlation. \emph{The library provides:} nothing beyond the statements of the
+hypotheses. \emph{Obstruction:} Propositions~\ref{prop:mix} and~\ref{prop:trivial}.
+\end{problem}
+
+\begin{problem}[Positive physical decay rate]\label{prob:gap}
+\emph{Requires:} one decay estimate in physical time, with the same rate along the whole cutoff
+sequence, on the entire space orthogonal to the vacuum; then
+Theorem~\ref{thm:resolventdecay} applies. \emph{The library provides:}
+Section~\ref{sec:resolvent}. \emph{Obstruction:} a contraction rate in lattice units carries no
+physical scale, and no such estimate is known at weak coupling.
+\end{problem}
+
+\begin{problem}[All compact simple groups]\label{prob:groups}
+\emph{Requires:} the whole construction for each group. \emph{The library provides:} definitions
+for $\SU(2)$ only.
+\end{problem}
+
+\subsection{Scope and limitations}
+
+The formal library formalizes constructions on the lattice; it does not re-derive the
+renormalization group theorems of~\cite{Balaban} or the cluster expansion
+of~\cite{KoteckyPreiss}. Theorems~\ref{thm:resolvent} and~\ref{thm:resolventdecay} are
+conditional on their hypotheses. Theorem~\ref{thm:density} is conditional on the stated
+threshold for $\beta$, and Theorem~\ref{thm:collapse} on the stated coupling schedule.
+
+The archive holds more than the results above. It is the whole Lean corpus of the campaign, in
+three tiers. \emph{First}, the results stated in this paper, which we stand behind.
+\emph{Second}, the other modules about the Wilson measure, whose header comments state their
+scope and which we believe to be sound but have not reviewed line by line. \emph{Third},
+material published as it is: the reconstruction module
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Reconstructed\allowbreak{}Generator\allowbreak{}Gap.\allowbreak{}lean}, the module
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Sussman\allowbreak{}Alpoge\allowbreak{}Balaban.\allowbreak{}lean} with the unrelated libraries it imports, and
+\texttt{Jesse\allowbreak{}Math/\allowbreak{}Formal\allowbreak{}Conjectures/\allowbreak{}Deep\allowbreak{}Mind\allowbreak{}Millennium.\allowbreak{}lean}. Every declaration in the third tier
+is kernel-checked, and some of it is real mathematics, but it also contains the failure
+patterns of Section~\ref{sec:hacking}, and a reader should trust a statement there only after
+reading its hypotheses.
+
+\section{How the search went sideways}\label{sec:hacking}
+
+In this chapter, we record how an automated research loop produced a large verified corpus
+without advancing its goal, so that others can recognize the pattern.
+
+\subsection{The setup}
+
+The search was carried out by automated workers. Each step had to compile in Lean with no
+\texttt{sorry} and only the standard axioms, pass a text-level audit, and be accepted by an
+automated reviewer. A contract of twenty-two gates ran from the definition of the lattice model
+to external review. Every one of those checks can be passed by a theorem that does not help.
+
+\subsection{What the workers did}
+
+\begin{remark}[The conclusion enters as a hypothesis]
+The most common pattern. The declaration
+\texttt{j14\_\allowbreak{}h2h\_\allowbreak{}six\_\allowbreak{}wave\_\allowbreak{}master\_\allowbreak{}physical\_\allowbreak{}gap\_\allowbreak{}and\_\allowbreak{}compact\_\allowbreak{}simple\_\allowbreak{}group\_\allowbreak{}synthesis} is described in
+its own comment as a master theorem for the physical gap and all compact simple groups. Its
+hypotheses include the decay estimate at the advertised rate, and the group enters only as a
+natural number. An internal audit of the six-stage plan it summarizes found the same in every
+stage: the estimate each stage was meant to prove was an argument of the theorem.
+\end{remark}
+
+\begin{remark}[The answer is a field of a structure]
+The structure \texttt{Deep\allowbreak{}Mind\allowbreak{}Yang\allowbreak{}Mills\allowbreak{}Solution} has the mass gap and its positivity as fields.
+The module \texttt{Jesse\allowbreak{}Math/\allowbreak{}Physics/\allowbreak{}Sussman\allowbreak{}Alpoge\allowbreak{}Balaban.\allowbreak{}lean} builds a term of it,
+\texttt{su2\allowbreak{}Canonical\allowbreak{}Odd13\allowbreak{}Deep\allowbreak{}Mind\allowbreak{}Solution}, and its header calls the term unconditional. The
+theorem \texttt{su2\allowbreak{}Canonical\allowbreak{}Odd13\allowbreak{}Deep\allowbreak{}Mind\allowbreak{}Solution\_\allowbreak{}mass\allowbreak{}Gap\_\allowbreak{}pos} then reads the field back. Nothing
+about the Wilson measure at weak coupling is used.
+\end{remark}
+
+\begin{remark}[Borrowed authority]
+That structure and its file are named after a third party's project with which we have no
+connection. A name of that kind makes a statement look like an accepted formulation of the
+problem. The published copy of the file carries a notice saying so.
+\end{remark}
+
+\begin{remark}[Volume instead of connection]
+On 9 November 2026 the working record outside this archive stood at 237 passes and 103 lemma
+files, none of which imported another, with no gate advanced. Inside the archive, the
+reconstruction module has \pkgbiglines{} lines, and \pkglabelled{} of its theorems are named
+after the worker and round that wrote them.
+\end{remark}
+
+\begin{remark}[A target that is easier than the gate]
+When the loop was required to state one target theorem for its fifth gate, the statement it
+registered (reproduced in \texttt{exhibits/\allowbreak{}frontier\_\allowbreak{}G05.\allowbreak{}lean.\allowbreak{}txt}) fixed one lattice of side two,
+took $\beta=3+u^2$, modelled a renormalization step by an index that only shifts the coupling,
+assumed three bounds, and filled its conclusion with facts already proved. It was not approved.
+\end{remark}
+
+\begin{remark}[What was not the problem]
+Padding by trivial arithmetic was minor: a text scan finds \pkgscanone{} of \pkgscantotal{}
+theorems in the library closed by a single arithmetic or rewriting tactic. The kernel was never
+fooled. Every failure was a failure of meaning, at the level of the statement.
+\end{remark}
+
+\subsection{Why the checks did not catch it}
+
+The gate ledger was a table of statuses that the workers themselves maintained. The reviewer's
+adversarial tests re-checked that table and always passed. The text audit looked for forbidden
+hypothesis shapes by pattern, and a pattern can be avoided by rewording. The contract forbade
+the reviewer from closing a gate, so the loop could neither finish nor fail. Under those rules
+the cheapest way to produce an accepted step was a new self-contained file.
+
+\subsection{What stopped it and what guards against it now}
+
+Negative controls were the first effective defence: once a shortcut was refuted on an explicit
+model (Section~\ref{sec:controls}), every later statement that relied on it could be rejected.
+The second was a human reading the argument lists of the headline theorems. The loop now runs
+under one rule that a machine can measure: each gate has one target theorem about the concrete
+Wilson measure, approved by a person, and a step counts only if that theorem still compiles
+with the same conclusion and a strictly shorter hypothesis list, and uses the step. Three steps
+without such progress halt the loop. Under that rule the loop halted on the day it was
+installed, and it remains halted. No gate of the contract is claimed as passed in this paper.
+
+\subsection{The research engine's reading of the record}
+
+Appendix~\ref{app:engine} reproduces, unedited, the report that the solidSF research engine
+produced when given the campaign's own audit documents and asked whether a claim of a proved
+mass gap is credible. The engine quotes passages and labels how each statement is grounded; it
+did not produce or check any of the mathematics above, and its report is included as an
+example of its output, not as evidence.
+
+\section{Status of the main conjecture}\label{sec:status}
+
+In this chapter, we state the conjecture and our position on it.
+
+\subsection{Statement}
+
+\begin{problem}[Yang--Mills existence and mass gap; \cite{JaffeWitten}]
+For every compact simple Lie group $G$ there is a nontrivial quantum Yang--Mills theory on
+$\R^4$ satisfying the Osterwalder--Schrader axioms, whose Hamiltonian $H$ has
+\begin{equation}
+\operatorname{spec}(H)\subseteq\{0\}\cup[\Delta,\infty)\qquad\text{for some }\Delta>0 .
+\end{equation}
+\end{problem}
+
+This paper does not claim a proof of this Problem, of its restriction to $G=\SU(2)$, or of any
+of Problems~\ref{prob:rg}--\ref{prob:groups}.
+
+\appendix
+\section{Files and reproduction}\label{app:files}
+
+The archive holds \pkgfiles{} Lean files (\pkglines{} lines, \pkgtheorems{} theorem
+declarations, \pkgcontrols{} control files). These counts describe the size of the archive and
+are not a measure of progress. To rebuild: install \texttt{elan}, run
+\texttt{lake exe cache get} and then \texttt{lake build --wfail JesseMath Controls} in the
+archive root. Each module ends with a compile-time audit that fails the build if any
+declaration depends on an axiom other than the three standard ones. The archive includes the log of
+that build and of a control in which an inserted false theorem and an inserted \texttt{sorry}
+are each rejected. The table gives the first
+sixteen hexadecimal digits of each SHA-256 digest; full digests are in \texttt{MANIFEST.json}.
+
+{\footnotesize
+\begin{longtable}{@{}>{\raggedright}p{0.56\textwidth}rrl@{}}
+\toprule
+File & Lines & Theorems & SHA-256 \\
+\midrule
+\endhead
+\pkgfiletable
+\bottomrule
+\end{longtable}}
+
+\section{Research engine report}\label{app:engine}
+
+The text below is the engine's report, unedited.
+
+{\footnotesize
+\begin{verbatim}
+# Research run: Is the claim that this work proves a positive mass gap for Yang-Mills theory
+  credible?
+
+Status: **ANSWERED** (4 of 4 sub-questions have grounded findings). Mode: grounded in the
+  material you gave.
+
+## What was read
+
+- QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md (text, via joey_intake): read, 1 text
+  part(s)
+- TARGETS.md (text, via joey_intake): read, 1 text part(s)
+- frontier_HALT.md (text, via joey_intake): read, 1 text part(s)
+- v1_audit.md (text, via joey_intake): read, 1 text part(s)
+
+## Proposed answer
+
+**What exactly is claimed about yang-mills theory mass proves?** (quoted from your material)
+> The new theorem works with an actual densely defined self-adjoint `LinearPMap`.
+  (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)
+
+**What argument or evidence supports the claim about yang-mills theory mass proves?**
+  (quoted from your material)
+> | Frontier | Evidence that would close the interface | Common substitute that does not
+  close it | | --- | --- | --- | | Weak coupling | Bounds on the actual conditioned blocked
+  Wilson integral, uniform in volume and in the declared coarse configurations, including
+  large-field contributions and normalization | A ratio bound accepted as a theorem
+  argument; finite samples; fixed-volume asymptotics | | Multi-step RG | An identity for
+  each blocked law, a stable norm for the entire remainder, and constants controlled through
+  a number of steps diverging as spacing tends to zero | One-step diagonal ca
+  (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)
+
+**What assumptions, limits or contradicting evidence bear on yang-mills theory mass
+  proves?** (quoted from your material)
+> | Claimed advance | What the declaration actually takes as input | What it proves | | ---
+  | --- | --- | | Wave 2: Hessian / Brascamp-Lieb concentration | `h_subG12`, `h_subG21`:
+  the desired two fiber-ratio inequalities with `exp(c_hess / beta)` | Log-action and
+  remainder oscillation consequences of those ratios | | Wave 3: multiscale RG closure | An
+  arbitrary coarse `K_carried`, its contracted oscillation, the two fiber ratios, a small
+  infrared coupling and a tube inequality | A triangle bound for an added function and
+  scalar invariant-region arithmetic | | Wave 4: reflection-positive Schwinge
+  (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)
+
+**Which parts of the claim about yang-mills theory mass proves can be checked
+  independently?** (quoted from your material)
+> 1. **Fixed-volume fluctuation remainder and small-field fiber domain
+  (`YangMillsHaarBlocking.lean`):** `haarFullLeadingFluctuationRemainder` defines `R_?(V) :=
+  A_?(V) - ? I_L(V)`,
+  `haarFullLeadingFluctuationRemainder_vacuum_zero_and_div_beta_tendsto_zero` proves `R_?(V)
+  / ? -> 0` at every fixed `(L, V)`, and
+  `haarSmallFieldFiberSublevel_partition_pos_measure_and_largeField_damping` proves the open
+  small-field / large-field fiber partition `D_? ? D_?^c`, positive Haar sublevel measure,
+  exponential large-field damping `exp(-? I_L(V)) exp(-? ?)`, and transverse distance
+  control under `HaarSmallFie (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)
+  Against this: "| Frontier | Named hypothesis | Where consumed | Negative control | | --- |
+  --- | --- | --- | | Uniform weak-to-strong RG control | none yet named; the replacement
+  contract targets `R_beta(V) = A_beta(V) - beta I_L(V)` on a declared small-field domain
+  with its complement | `YangMillsHaarBlocking` | "
+  (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)
+
+## Open and next steps
+
+- Every sub-question has a grounded finding; check the quoted passages before relying on
+  them.
+
+Rounds: 1; stopped because every sub-question has a grounded finding. Nothing here is marked
+  verified unless an exact checker proved it.
+\end{verbatim}}
+
+\begin{thebibliography}{9}
+\bibitem{Balaban} T.~Ba\l{}aban, \emph{Renormalization group approach to lattice gauge field
+theories. I}, Comm. Math. Phys. 109 (1987), 249--301.
+\bibitem{JaffeWitten} A.~Jaffe and E.~Witten, \emph{Quantum Yang--Mills theory}, in: The
+Millennium Prize Problems, Clay Mathematics Institute, 2006, 129--152.
+\bibitem{KoteckyPreiss} R.~Koteck\'y and D.~Preiss, \emph{Cluster expansion for abstract polymer
+models}, Comm. Math. Phys. 103 (1986), 491--498.
+\bibitem{Lean4} L.~de~Moura and S.~Ullrich, \emph{The Lean 4 theorem prover and programming
+language}, CADE-28, 2021. Toolchain \texttt{\pkgtoolchain}.
+\bibitem{Mathlib} The mathlib Community, \emph{The Lean mathematical library}, CPP 2020.
+Revision \pkgmathlibb.
+\bibitem{OsterwalderSchrader} K.~Osterwalder and R.~Schrader, \emph{Axioms for Euclidean Green's
+functions}, Comm. Math. Phys. 31 (1973), 83--112.
+\bibitem{OsterwalderSeiler} K.~Osterwalder and E.~Seiler, \emph{Gauge field theories on a
+lattice}, Ann. Physics 110 (1978), 440--471.
+\bibitem{Wilson} K.~G.~Wilson, \emph{Confinement of quarks}, Phys. Rev. D 10 (1974), 2445--2459.
+\end{thebibliography}
+
+\end{document}

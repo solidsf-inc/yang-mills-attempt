@@ -1,0 +1,39 @@
+{
+  "title": "Toward a Proof of the Yang–Mills Existence and Mass Gap Problem – The Wilson Lattice Measure in Lean 4: Established Results and Open Obligations",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "publication_date": "2026-11-09",
+  "version": "1.0.0",
+  "description": "<p><strong>This record does not solve the Yang–Mills existence and mass gap problem and does not prove a positive mass gap for any quantum Yang–Mills theory.</strong> It is the checkable record of an attempt, published so that others can verify it and reuse it.</p><p>It contains a paper and the whole Lean 4 corpus of the campaign (about 106,000 lines), built from a clean copy with zero <code>sorry</code> declarations and only Lean's standard axioms (<code>propext</code>, <code>Classical.choice</code>, <code>Quot.sound</code>). A kernel check certifies each stated implication; it does not certify that a statement means what its name suggests. The paper therefore separates the corpus into results the authors stand behind and material published as it is.</p><p>Results stood behind: exact finite-volume statements about the four-dimensional SU(2) Wilson lattice measure (gauge and translation invariance, Osterwalder–Seiler reflection positivity, a two-sided volume law for the Haar mass of low-action configurations, a volume-uniform action-density bound, plaquette tail bounds and the collapse of the small-field event), weak compactness of the finite-volume laws, an abstract resolvent theorem for self-adjoint generators, and negative controls that refute tempting shortcuts on explicit models.</p><p>Open, and stated as numbered Problems with what blocked each: uniform multiscale control, a unique continuum limit, Euclidean covariance, clustering, nontriviality, a positive physical decay rate, and all groups other than SU(2).</p><p>The paper also documents how the automated research loop behind this work drifted into reward hacking (conclusions entering as hypotheses, a solution structure whose mass gap is one of its own fields, volume without connection), why its checks did not catch it, and the rule that now guards against it. The loop was stopped on 9 November 2026 with no gate of its verification contract advanced. One file in the archive uses the name of Google DeepMind's formal-conjectures project; there is no affiliation or endorsement, and the file carries a notice saying so.</p><p>The archive also holds the unedited report of the solidSF research engine run on the campaign's audit documents. The earlier record 10.5281/zenodo.22904674 claimed a proved mass gap; that claim was wrong and is withdrawn.</p>",
+  "creators": [
+    {
+      "name": "solidSF Research Team",
+      "affiliation": "solidSF, Inc."
+    }
+  ],
+  "keywords": [
+    "Yang–Mills theory",
+    "lattice gauge theory",
+    "Wilson action",
+    "reflection positivity",
+    "mass gap",
+    "Lean 4",
+    "formal verification",
+    "reward hacking",
+    "automated theorem proving"
+  ],
+  "license": "Apache-2.0",
+  "access_right": "open",
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.22904674",
+      "relation": "obsoletes",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://research.solidsf.com/yang-mills",
+      "relation": "isDocumentedBy",
+      "scheme": "url"
+    }
+  ]
+}

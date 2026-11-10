@@ -1,0 +1,17 @@
+== negative control 2026-11-10T01:05:01Z
+Completed successfully in 15224 ms!
+error: JesseMath/Physics/YangMillsBlockGeometry.lean:210:47: Tactic `decide` proved that the proposition
+  1 = 2
+is false
+Some required targets logged failures:
+- JesseMath.Physics.YangMillsBlockGeometry
+error: build failed
+FALSE_THEOREM_EXIT=1
+warning: JesseMath/Physics/YangMillsBlockGeometry.lean:208:8: declaration uses `sorry`
+error: JesseMath/Physics/YangMillsBlockGeometry.lean:210:0: Axiom audit failed (1 declaration(s) outside ZFC):
+  • ym_sorry_control depends on disallowed axioms: [sorryAx]
+Some required targets logged failures:
+- JesseMath.Physics.YangMillsBlockGeometry
+error: build failed
+SORRY_EXIT=1
+== done 2026-11-10T01:06:13Z

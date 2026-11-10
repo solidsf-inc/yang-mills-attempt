@@ -1,0 +1,431 @@
+{
+  "schema": "jesse.research_run.v1",
+  "id": "rr:fa31fbccad97",
+  "started": "2026-11-10T00:58:08.198Z",
+  "finished": "2026-11-10T00:58:08.525Z",
+  "question": "Is the claim that this work proves a positive mass gap for Yang-Mills theory credible?",
+  "question_type": "assess",
+  "mode": "corpus_grounded",
+  "status": "ANSWERED",
+  "verified": false,
+  "routes": [
+    {
+      "input": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md",
+      "kind": "text",
+      "tool": "joey_intake",
+      "status": "read",
+      "notes": [],
+      "source": "s:84199db8c6d2",
+      "text_parts": 1,
+      "image_parts": 0
+    },
+    {
+      "input": "TARGETS.md",
+      "kind": "text",
+      "tool": "joey_intake",
+      "status": "read",
+      "notes": [],
+      "source": "s:748b72d69408",
+      "text_parts": 1,
+      "image_parts": 0
+    },
+    {
+      "input": "frontier_HALT.md",
+      "kind": "text",
+      "tool": "joey_intake",
+      "status": "read",
+      "notes": [],
+      "source": "s:676f0e530801",
+      "text_parts": 1,
+      "image_parts": 0
+    },
+    {
+      "input": "v1_audit.md",
+      "kind": "text",
+      "tool": "joey_intake",
+      "status": "read",
+      "notes": [],
+      "source": "s:0fd068ed3658",
+      "text_parts": 1,
+      "image_parts": 0
+    }
+  ],
+  "sources": [
+    {
+      "id": "s:84199db8c6d2",
+      "name": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md",
+      "kind": "text",
+      "read_as": "document",
+      "receipt": {
+        "bytes": 35198,
+        "sha256": "84199db8c6d2091412a3159d0a4f5df728c1f45a21da2414b29729c6c2818869",
+        "method": "utf-8-text",
+        "duration_ms": 0,
+        "notes": [],
+        "chars": 35134
+      }
+    },
+    {
+      "id": "s:748b72d69408",
+      "name": "TARGETS.md",
+      "kind": "text",
+      "read_as": "document",
+      "receipt": {
+        "bytes": 56330,
+        "sha256": "748b72d694080713242af4c7a6145f1cc0914263fcfc9c2b8f000070d7cd75e6",
+        "method": "utf-8-text",
+        "duration_ms": 0,
+        "notes": [],
+        "chars": 54556
+      }
+    },
+    {
+      "id": "s:676f0e530801",
+      "name": "frontier_HALT.md",
+      "kind": "text",
+      "read_as": "document",
+      "receipt": {
+        "bytes": 1346,
+        "sha256": "676f0e530801b164b417cf7aeaa32ff6061fe286ebeb5ed696e6b7ae6c7e28d5",
+        "method": "utf-8-text",
+        "duration_ms": 0,
+        "notes": [],
+        "chars": 1342
+      }
+    },
+    {
+      "id": "s:0fd068ed3658",
+      "name": "v1_audit.md",
+      "kind": "text",
+      "read_as": "document",
+      "receipt": {
+        "bytes": 2126,
+        "sha256": "0fd068ed3658405149132f04e50a29f91c59d22e20340862b577ee2b9618bec6",
+        "method": "utf-8-text",
+        "duration_ms": 0,
+        "notes": [],
+        "chars": 2110
+      }
+    }
+  ],
+  "corpus": {
+    "units": 67,
+    "readable": 67,
+    "images_not_read": 0
+  },
+  "sub_questions": [
+    {
+      "id": "q1",
+      "kind": "claim",
+      "text": "What exactly is claimed about yang-mills theory mass proves?",
+      "terms": [
+        "yang-mills",
+        "theory",
+        "mass",
+        "proves",
+        "gap",
+        "positive",
+        "main",
+        "result",
+        "theorem",
+        "show",
+        "prove"
+      ],
+      "status": "SOURCED"
+    },
+    {
+      "id": "q2",
+      "kind": "support",
+      "text": "What argument or evidence supports the claim about yang-mills theory mass proves?",
+      "terms": [
+        "yang-mills",
+        "theory",
+        "mass",
+        "proves",
+        "gap",
+        "positive",
+        "proof",
+        "lemma",
+        "because",
+        "construction",
+        "construct",
+        "recursion",
+        "argument",
+        "follows"
+      ],
+      "status": "SOURCED"
+    },
+    {
+      "id": "q3",
+      "kind": "limits",
+      "text": "What assumptions, limits or contradicting evidence bear on yang-mills theory mass proves?",
+      "terms": [
+        "yang-mills",
+        "theory",
+        "mass",
+        "proves",
+        "gap",
+        "positive",
+        "however",
+        "assume",
+        "only",
+        "limitation",
+        "open",
+        "unknown"
+      ],
+      "status": "SOURCED"
+    },
+    {
+      "id": "q4",
+      "kind": "checkable",
+      "text": "Which parts of the claim about yang-mills theory mass proves can be checked independently?",
+      "terms": [
+        "yang-mills",
+        "theory",
+        "mass",
+        "proves",
+        "gap",
+        "positive",
+        "equation",
+        "identity",
+        "bound",
+        "compute",
+        "explicit"
+      ],
+      "status": "SOURCED"
+    }
+  ],
+  "rounds": [
+    {
+      "round": 1,
+      "sub_questions": [
+        "q1",
+        "q2",
+        "q3",
+        "q4"
+      ],
+      "units": 67,
+      "facts": 422,
+      "jesse_calls": 0,
+      "jesse_note": "Jesse's swarm is not connected on this path",
+      "grounded_added": 12,
+      "stopped": "every sub-question has a grounded finding"
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "subq": "q1",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "The new theorem works with an actual densely defined self-adjoint `LinearPMap`.",
+      "evidence": [
+        {
+          "unit": "u:66cfef73f039",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "result",
+      "score": 10.141,
+      "round": 1
+    },
+    {
+      "id": "f2",
+      "subq": "q1",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "A theorem may correctly prove an implication while leaving the intended analytic premise entirely open.",
+      "evidence": [
+        {
+          "unit": "u:b005cb17b6a5",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "result",
+      "score": 10.081,
+      "round": 1
+    },
+    {
+      "id": "f3",
+      "subq": "q1",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "The theorem does not prove the converse for the actual tail.",
+      "evidence": [
+        {
+          "unit": "u:edd0441f2ecc",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "result",
+      "score": 9.645,
+      "round": 1
+    },
+    {
+      "id": "f4",
+      "subq": "q2",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "| Frontier | Evidence that would close the interface | Common substitute that does not close it | | --- | --- | --- | | Weak coupling | Bounds on the actual conditioned blocked Wilson integral, uniform in volume and in the declared coarse configurations, including large-field contributions and normalization | A ratio bound accepted as a theorem argument; finite samples; fixed-volume asymptotics | | Multi-step RG | An identity for each blocked law, a stable norm for the entire remainder, and constants controlled through a number of steps diverging as spacing tends to zero | One-step diagonal cancellation; one-link oscillation; a recurrence whose required estimates are supplied | | Continuum fields | One common limit of the renormalized full observable hierarchy, with reflection positivity, regularity and Euclidean covariance proved on that hierarchy | Compactness of unscaled links; degree-two positivity; cubic rotations only | | Physical gap | The reconstructed time generator and vacuum, a uniform positive decay rate in physical time on the entire excited space, and the limiting spectral argument | A Markov-sampler gap; a fixed lattice-unit bound; decay only on a visible subspace | | Nontriviality | A nonzero physical observable with positive limiting vacuum-orthogonal norm, compatible with the reconstructed model | Positivity before the limit; an abstract nonzero vector in an unrelated Hilbert space | | All groups | The full construction for each compact simple group, with the needed group-dependent estimates proved | Enumerating group names or proving a positive symbolic normalization constant |",
+      "evidence": [
+        {
+          "unit": "u:e6155acc68b2",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "result",
+      "score": 13.753,
+      "round": 1
+    },
+    {
+      "id": "f5",
+      "subq": "q2",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "Reading their argument lists is decisive: the final theorem does not consume a construction from the geometry, fiber, RG or continuum modules.",
+      "evidence": [
+        {
+          "unit": "u:8a7228bcf95b",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "result",
+      "score": 13.278,
+      "counter": {
+        "quote": "| Frontier | Evidence that would close the interface | Common substitute that does not close it | | --- | --- | --- | | Weak coupling | Bounds on the actual conditioned blocked Wilson integral, uniform in volume and in the declared coarse configurations, including large-field contributions and normalization | A ratio bound accepted as a theorem argument; finite samples; fixed-volume asymptotics | | Multi-step RG | An identity for each blocked law, a stable norm for the entire remainder, and constants controlled through a number of steps diverging as spacing tends to zero | One-step diagonal cancellation; one-link oscillation; a recurrence whose required estimates are supplied | | Continuum fields | One common limit of the renormalized full observable hierarchy, with reflection positivity, regularity and Euclidean covariance proved on that hierarchy | Compactness of unscaled links; degree-two positivity; cubic rotations only | | Physical gap | The reconstructed time generator and vacuum, a uniform positive decay rate in physical time on the entire excited space, and the limiting spectral argument | A Markov-sampler gap; a fixed lattice-unit bound; decay only on a visible subspace | | Nontriviality | A nonzero physical observable with positive limiting vacuum-orthogonal norm, compatible with the reconstructed model | Positivity before the limit; an abstract nonzero vector in an unrelated Hilbert space | | All groups | The full construction for each compact simple group, with the needed group-dependent estimates proved | Enumerating group names or proving a positive symbolic normalization constant |",
+        "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+      },
+      "round": 1
+    },
+    {
+      "id": "f6",
+      "subq": "q2",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "| Frontier | Named hypothesis | Where consumed | Negative control | | --- | --- | --- | --- | | Uniform weak-to-strong RG control | none yet named; the replacement contract targets `R_beta(V) = A_beta(V) - beta I_L(V)` on a declared small-field domain with its complement | `YangMillsHaarBlocking` | global `O(1/beta)` point-probe remainder refuted at `L = 1` | | Unique continuum limit: tightness | `LoopRenormalization.TailObligation` | `ObligationsExceptReflection.renormalized_tails`, `WilsonTransferLedger.tails` | unbounded factors destroy tightness (`not_tailObligation_growingFactors`) | | Unique continuum limit: identification | `LoopRenormalization.LimitLawsAgree` (the unrenormalized `WilsonLoopConvergenceObligation` is this question for factor one, `wilsonLoopConvergenceObligation_iff_limitLawsAgree`) | `ObligationsExceptReflection.limits_agree`, `WilsonTransferLedger.identification` | oscillating Wilson path has two limits (`convergence_obligation_not_automatic`) | | Regularity of the limit | `DyadicTimeApproximable` (`WilsonLimitRegularity.dyadic_approximable`) | full reflection positivity from dyadic positivity, reconstruction | a reflection-positive, dyadic-shift-invariant Dirac law that is not dyadically approximable (`dyadicIndicatorLaw`) | | Euclidean covariance: reflection | `LoopRenormalization.LimitLawsReflectionInvariant` (`WilsonLimitRegularity.reflection_invariant`); proved on time-dyadic cylinders by `limit_reflect_invariant_timeDyadic` | `wilsonLimitLaw` | same Dirac law shows positivity and dyadic symmetries do not force the remaining regularity | | Euclidean covariance: translations | `LoopRenormalization.LimitLawsTranslationInvariant` (`WilsonLimitRegularity.translation_invariant`, `ObligationsExceptReflection.translation_invariant`); lattice shifts proved by `limit_translation_invariant` | half-step symmetry of the reconstructed transfer operator | the same Dirac law is invariant under every dyadic shift and not under the shift by one third | | Clustering | `ObligationsExceptReflection.time_mixing` | identification with a continuum theory | no cutoff law on the dyadic path is time mixing (`dyadic_cutoffs_not_eventually_mixing`); mixing is not open or closed under limits | | Nontriviality | `ConnectedCorrelationLowerBound` (discharges `ObligationsExceptReflection.nontrivial`) | identification with a continuum theory | the constant Dirac law is reflection positive, fully symmetric and time mixing yet trivial (`constantLaw_trivial`) | | Uniform physical-time decay | `EventualCorrelationDecay Z.law s rho` (`WilsonTransferLedger.uniform_decay`) | `wilsonLimit_decay_and_generator_gap` | the two-vacuum law has every symmetry and no decay; `log (8/7)` and `12 beta` carry no physical scale | | All compact simple groups | not modelled beyond the `SU(2)` definitions | none | a positive integer parameter does not construct a gauge theory |",
+      "evidence": [
+        {
+          "unit": "u:7f69df079df7",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "relation",
+      "score": 13.098,
+      "counter": {
+        "quote": "Every hypothesis below is stated once in Lean, is consumed under that one name by every theorem that needs it, and has a negative control showing it does not follow from the others.",
+        "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+      },
+      "round": 1
+    },
+    {
+      "id": "f7",
+      "subq": "q3",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "| Claimed advance | What the declaration actually takes as input | What it proves | | --- | --- | --- | | Wave 2: Hessian / Brascamp\u2013Lieb concentration | `h_subG12`, `h_subG21`: the desired two fiber-ratio inequalities with `exp(c_hess / beta)` | Log-action and remainder oscillation consequences of those ratios | | Wave 3: multiscale RG closure | An arbitrary coarse `K_carried`, its contracted oscillation, the two fiber ratios, a small infrared coupling and a tube inequality | A triangle bound for an added function and scalar invariant-region arithmetic | | Wave 4: reflection-positive Schwinger hierarchy | An arbitrary continuous real kernel `K_rp` and `h_rp_finite` asserting a nonnegative finite quadratic sum | Nonnegativity of that same sum after weak convergence | | Wave 4: exponential clustering | `hm : 0 < m_gap` and `h_clust_finite` asserting the prelimit covariance bound | The supplied covariance bound survives the limit; a scalar exponential tends to zero | | Wave 5: SO(4) recovery | Two arbitrary continuous observables and `h_aniso` bounding their difference by a supplied null sequence | Equality of those two limiting expectations | | Waves 5\u20136: physical mass gap | `hdecay` at the advertised rate, `hstrong`, `hgenerator`, a supplied domain and evolution | Coercivity, residual lower bounds and approximate-mode exclusion on that domain | | Wave 6: nontriviality | `h_exc_floor` asserting a uniform positive excited norm and `h_perp_eq` placing the projection in the domain | That positive lower bound survives vacuum convergence | | Wave 6: every compact simple group | A natural number named `h_dual_coxeter`, positive length and nonnegative oscillation | Positivity of a scalar inserted into the assumed decay estimate |",
+      "evidence": [
+        {
+          "unit": "u:e82be2cbe1b0",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "limitation",
+      "score": 11.88,
+      "round": 1
+    },
+    {
+      "id": "f8",
+      "subq": "q3",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "| Frontier | Named hypothesis | Where consumed | Negative control | | --- | --- | --- | --- | | Uniform weak-to-strong RG control | none yet named; the replacement contract targets `R_beta(V) = A_beta(V) - beta I_L(V)` on a declared small-field domain with its complement | `YangMillsHaarBlocking` | global `O(1/beta)` point-probe remainder refuted at `L = 1` | | Unique continuum limit: tightness | `LoopRenormalization.TailObligation` | `ObligationsExceptReflection.renormalized_tails`, `WilsonTransferLedger.tails` | unbounded factors destroy tightness (`not_tailObligation_growingFactors`) | | Unique continuum limit: identification | `LoopRenormalization.LimitLawsAgree` (the unrenormalized `WilsonLoopConvergenceObligation` is this question for factor one, `wilsonLoopConvergenceObligation_iff_limitLawsAgree`) | `ObligationsExceptReflection.limits_agree`, `WilsonTransferLedger.identification` | oscillating Wilson path has two limits (`convergence_obligation_not_automatic`) | | Regularity of the limit | `DyadicTimeApproximable` (`WilsonLimitRegularity.dyadic_approximable`) | full reflection positivity from dyadic positivity, reconstruction | a reflection-positive, dyadic-shift-invariant Dirac law that is not dyadically approximable (`dyadicIndicatorLaw`) | | Euclidean covariance: reflection | `LoopRenormalization.LimitLawsReflectionInvariant` (`WilsonLimitRegularity.reflection_invariant`); proved on time-dyadic cylinders by `limit_reflect_invariant_timeDyadic` | `wilsonLimitLaw` | same Dirac law shows positivity and dyadic symmetries do not force the remaining regularity | | Euclidean covariance: translations | `LoopRenormalization.LimitLawsTranslationInvariant` (`WilsonLimitRegularity.translation_invariant`, `ObligationsExceptReflection.translation_invariant`); lattice shifts proved by `limit_translation_invariant` | half-step symmetry of the reconstructed transfer operator | the same Dirac law is invariant under every dyadic shift and not under the shift by one third | | Clustering | `ObligationsExceptReflection.time_mixing` | identification with a continuum theory | no cutoff law on the dyadic path is time mixing (`dyadic_cutoffs_not_eventually_mixing`); mixing is not open or closed under limits | | Nontriviality | `ConnectedCorrelationLowerBound` (discharges `ObligationsExceptReflection.nontrivial`) | identification with a continuum theory | the constant Dirac law is reflection positive, fully symmetric and time mixing yet trivial (`constantLaw_trivial`) | | Uniform physical-time decay | `EventualCorrelationDecay Z.law s rho` (`WilsonTransferLedger.uniform_decay`) | `wilsonLimit_decay_and_generator_gap` | the two-vacuum law has every symmetry and no decay; `log (8/7)` and `12 beta` carry no physical scale | | All compact simple groups | not modelled beyond the `SU(2)` definitions | none | a positive integer parameter does not construct a gauge theory |",
+      "evidence": [
+        {
+          "unit": "u:7f69df079df7",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "limitation",
+      "score": 11.842,
+      "counter": {
+        "quote": "Every hypothesis below is stated once in Lean, is consumed under that one name by every theorem that needs it, and has a negative control showing it does not follow from the others.",
+        "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+      },
+      "round": 1
+    },
+    {
+      "id": "f9",
+      "subq": "q3",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "Once the order is fixed, all 144 theorems compile using only standard axioms.",
+      "evidence": [
+        {
+          "unit": "u:a1e21df63936",
+          "where": "v1_audit.md"
+        }
+      ],
+      "fact": "limitation",
+      "score": 11.59,
+      "round": 1
+    },
+    {
+      "id": "f10",
+      "subq": "q4",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "| Claimed advance | What the declaration actually takes as input | What it proves | | --- | --- | --- | | Wave 2: Hessian / Brascamp\u2013Lieb concentration | `h_subG12`, `h_subG21`: the desired two fiber-ratio inequalities with `exp(c_hess / beta)` | Log-action and remainder oscillation consequences of those ratios | | Wave 3: multiscale RG closure | An arbitrary coarse `K_carried`, its contracted oscillation, the two fiber ratios, a small infrared coupling and a tube inequality | A triangle bound for an added function and scalar invariant-region arithmetic | | Wave 4: reflection-positive Schwinger hierarchy | An arbitrary continuous real kernel `K_rp` and `h_rp_finite` asserting a nonnegative finite quadratic sum | Nonnegativity of that same sum after weak convergence | | Wave 4: exponential clustering | `hm : 0 < m_gap` and `h_clust_finite` asserting the prelimit covariance bound | The supplied covariance bound survives the limit; a scalar exponential tends to zero | | Wave 5: SO(4) recovery | Two arbitrary continuous observables and `h_aniso` bounding their difference by a supplied null sequence | Equality of those two limiting expectations | | Waves 5\u20136: physical mass gap | `hdecay` at the advertised rate, `hstrong`, `hgenerator`, a supplied domain and evolution | Coercivity, residual lower bounds and approximate-mode exclusion on that domain | | Wave 6: nontriviality | `h_exc_floor` asserting a uniform positive excited norm and `h_perp_eq` placing the projection in the domain | That positive lower bound survives vacuum convergence | | Wave 6: every compact simple group | A natural number named `h_dual_coxeter`, positive length and nonnegative oscillation | Positivity of a scalar inserted into the assumed decay estimate |",
+      "evidence": [
+        {
+          "unit": "u:e82be2cbe1b0",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "relation",
+      "score": 13.838,
+      "round": 1
+    },
+    {
+      "id": "f11",
+      "subq": "q4",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "1. **Fixed-volume fluctuation remainder and small-field fiber domain (`YangMillsHaarBlocking.lean`):** `haarFullLeadingFluctuationRemainder` defines `R_\u03b2(V) := A_\u03b2(V) - \u03b2 I_L(V)`, `haarFullLeadingFluctuationRemainder_vacuum_zero_and_div_beta_tendsto_zero` proves `R_\u03b2(V) / \u03b2 \u2192 0` at every fixed `(L, V)`, and `haarSmallFieldFiberSublevel_partition_pos_measure_and_largeField_damping` proves the open small-field / large-field fiber partition `D_\u03b2 \u2294 D_\u03b2^c`, positive Haar sublevel measure, exponential large-field damping `exp(-\u03b2 I_L(V)) exp(-\u03b2 \u03b4)`, and transverse distance control under `HaarSmallFieldCoerciveGaugeSlice` (without claiming a uniform-in-`L` polymer norm). 2. **Interacting blocked fiber integral (`YangMillsRGBridgeObstruction.lean`):** `interactingBlockedFiberWeight` and `interactingBlockedEffectiveAction` integrate `exp(-\u03b2_k S_1(U) - K_k(U))` inside `dis.fiberKernel V`, `interactingBlockedFiberWeight_zero_remainder_and_exponential_sandwich` proves the two-sided exponential sandwich for bounded measurable `K_k`, and `interacting_twoStep_dyadic_blocking_semigroup_and_effective_action_identity` proves multiplicative factorization of `exp(-c_k)` and cancellation of the additive vacuum constant in the normalized effective action. 3. **Conditional self-adjoint resolvent bridge on `OSHilbert` (`YangMillsReconstructedGeneratorGap.lean`):** `UnboundedSelfAdjointOSSemigroupBridge`, `unbounded_selfAdjoint_osSemigroup_coercive_and_resolvent_without_spectral_floor`, and `wilsonLimit_unbounded_selfAdjoint_resolvent_bridge` prove domain coercivity and construct the everywhere-defined bounded resolvent `(H_op - E)\u207b\u00b9` on `OSHilbert` for `E < m` even when `0 \u2208 spectrum \u211d T` forbids a bounded logarithm `log T`.",
+      "evidence": [
+        {
+          "unit": "u:f281429ccea2",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "relation",
+      "score": 11.5,
+      "counter": {
+        "quote": "| Frontier | Named hypothesis | Where consumed | Negative control | | --- | --- | --- | --- | | Uniform weak-to-strong RG control | none yet named; the replacement contract targets `R_beta(V) = A_beta(V) - beta I_L(V)` on a declared small-field domain with its complement | `YangMillsHaarBlocking` | global `O(1/beta)` point-probe remainder refuted at `L = 1` | | Unique continuum limit: tightness | `LoopRenormalization.TailObligation` | `ObligationsExceptReflection.renormalized_tails`, `WilsonTransferLedger.tails` | unbounded factors destroy tightness (`not_tailObligation_growingFactors`) | | Unique continuum limit: identification | `LoopRenormalization.LimitLawsAgree` (the unrenormalized `WilsonLoopConvergenceObligation` is this question for factor one, `wilsonLoopConvergenceObligation_iff_limitLawsAgree`) | `ObligationsExceptReflection.limits_agree`, `WilsonTransferLedger.identification` | oscillating Wilson path has two limits (`convergence_obligation_not_automatic`) | | Regularity of the limit | `DyadicTimeApproximable` (`WilsonLimitRegularity.dyadic_approximable`) | full reflection positivity from dyadic positivity, reconstruction | a reflection-positive, dyadic-shift-invariant Dirac law that is not dyadically approximable (`dyadicIndicatorLaw`) | | Euclidean covariance: reflection | `LoopRenormalization.LimitLawsReflectionInvariant` (`WilsonLimitRegularity.reflection_invariant`); proved on time-dyadic cylinders by `limit_reflect_invariant_timeDyadic` | `wilsonLimitLaw` | same Dirac law shows positivity and dyadic symmetries do not force the remaining regularity | | Euclidean covariance: translations | `LoopRenormalization.LimitLawsTranslationInvariant` (`WilsonLimitRegularity.translation_invariant`, `ObligationsExceptReflection.translation_invariant`); lattice shifts proved by `limit_translation_invariant` | half-step symmetry of the reconstructed transfer operator | the same Dirac law is invariant under every dyadic shift and not under the shift by one third | | Clustering | `ObligationsExceptReflection.time_mixing` | identification with a continuum theory | no cutoff law on the dyadic path is time mixing (`dyadic_cutoffs_not_eventually_mixing`); mixing is not open or closed under limits | | Nontriviality | `ConnectedCorrelationLowerBound` (discharges `ObligationsExceptReflection.nontrivial`) | identification with a continuum theory | the constant Dirac law is reflection positive, fully symmetric and time mixing yet trivial (`constantLaw_trivial`) | | Uniform physical-time decay | `EventualCorrelationDecay Z.law s rho` (`WilsonTransferLedger.uniform_decay`) | `wilsonLimit_decay_and_generator_gap` | the two-vacuum law has every symmetry and no decay; `log (8/7)` and `12 beta` carry no physical scale | | All compact simple groups | not modelled beyond the `SU(2)` definitions | none | a positive integer parameter does not construct a gauge theory |",
+        "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+      },
+      "round": 1
+    },
+    {
+      "id": "f12",
+      "subq": "q4",
+      "lane": "statements",
+      "status": "SOURCED",
+      "text": "The new argument uses one identity neighborhood in SU(2), with Haar mass `c > 0`, small enough that every plaquette built from four links in that neighborhood has action below a chosen threshold.",
+      "evidence": [
+        {
+          "unit": "u:98c51f2aedd1",
+          "where": "QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md"
+        }
+      ],
+      "fact": "relation",
+      "score": 10.491,
+      "round": 1
+    }
+  ],
+  "report": "# Research run: Is the claim that this work proves a positive mass gap for Yang-Mills theory credible?\n\nStatus: **ANSWERED** (4 of 4 sub-questions have grounded findings). Mode: grounded in the material you gave.\n\n## What was read\n\n- QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md (text, via joey_intake): read, 1 text part(s)\n- TARGETS.md (text, via joey_intake): read, 1 text part(s)\n- frontier_HALT.md (text, via joey_intake): read, 1 text part(s)\n- v1_audit.md (text, via joey_intake): read, 1 text part(s)\n\n## Proposed answer\n\n**What exactly is claimed about yang-mills theory mass proves?** (quoted from your material)\n> The new theorem works with an actual densely defined self-adjoint `LinearPMap`. (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)\n\n**What argument or evidence supports the claim about yang-mills theory mass proves?** (quoted from your material)\n> | Frontier | Evidence that would close the interface | Common substitute that does not close it | | --- | --- | --- | | Weak coupling | Bounds on the actual conditioned blocked Wilson integral, uniform in volume and in the declared coarse configurations, including large-field contributions and normalization | A ratio bound accepted as a theorem argument; finite samples; fixed-volume asymptotics | | Multi-step RG | An identity for each blocked law, a stable norm for the entire remainder, and constants controlled through a number of steps diverging as spacing tends to zero | One-step diagonal ca (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)\n\n**What assumptions, limits or contradicting evidence bear on yang-mills theory mass proves?** (quoted from your material)\n> | Claimed advance | What the declaration actually takes as input | What it proves | | --- | --- | --- | | Wave 2: Hessian / Brascamp\u2013Lieb concentration | `h_subG12`, `h_subG21`: the desired two fiber-ratio inequalities with `exp(c_hess / beta)` | Log-action and remainder oscillation consequences of those ratios | | Wave 3: multiscale RG closure | An arbitrary coarse `K_carried`, its contracted oscillation, the two fiber ratios, a small infrared coupling and a tube inequality | A triangle bound for an added function and scalar invariant-region arithmetic | | Wave 4: reflection-positive Schwinge (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)\n\n**Which parts of the claim about yang-mills theory mass proves can be checked independently?** (quoted from your material)\n> 1. **Fixed-volume fluctuation remainder and small-field fiber domain (`YangMillsHaarBlocking.lean`):** `haarFullLeadingFluctuationRemainder` defines `R_\u03b2(V) := A_\u03b2(V) - \u03b2 I_L(V)`, `haarFullLeadingFluctuationRemainder_vacuum_zero_and_div_beta_tendsto_zero` proves `R_\u03b2(V) / \u03b2 \u2192 0` at every fixed `(L, V)`, and `haarSmallFieldFiberSublevel_partition_pos_measure_and_largeField_damping` proves the open small-field / large-field fiber partition `D_\u03b2 \u2294 D_\u03b2^c`, positive Haar sublevel measure, exponential large-field damping `exp(-\u03b2 I_L(V)) exp(-\u03b2 \u03b4)`, and transverse distance control under `HaarSmallFie (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)\n  Against this: \"| Frontier | Named hypothesis | Where consumed | Negative control | | --- | --- | --- | --- | | Uniform weak-to-strong RG control | none yet named; the replacement contract targets `R_beta(V) = A_beta(V) - beta I_L(V)` on a declared small-field domain with its complement | `YangMillsHaarBlocking` | \" (QYM_ACTUAL_MODEL_PROGRESS_AND_FAILURE_MODES.md)\n\n## Open and next steps\n\n- Every sub-question has a grounded finding; check the quoted passages before relying on them.\n\nRounds: 1; stopped because every sub-question has a grounded finding. Nothing here is marked verified unless an exact checker proved it.",
+  "engine": {
+    "cli": "research_engine_cli.mjs",
+    "jesse_url": null,
+    "joey": "data-tools/joey/joey"
+  }
+}

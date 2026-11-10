@@ -1,0 +1,379 @@
+import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import Mathlib.MeasureTheory.Constructions.Pi
+import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import modular_proofs.lemma_329_g05_g12_oneloop_toron_hessian_148_163_177_188_and_beta_uniform_oscillation
+import modular_proofs.lemma_330_g05b_joint_139d_backbone_schur_and_4d_weighted_row_sum_closure
+import modular_proofs.lemma_333_g05d3_su2_weyl_haar_class_calculus_and_toron_commutator_collar
+
+/-!
+# Frontier Target Theorem for Gate `G05`: Gaussian Backbone Extraction (with `G05-A..E` Harmonic-Sector Split)
+
+- **Scope & Gate Ledger Status (`PARTIAL_SCOPE` / `OPEN` Target Registration):**
+  - `gates_closed_in_step = 0`, `open_gates_remaining = 17` (`5/22 PASS`, `17/22 OPEN`).
+  - Gate `G05` is strictly `OPEN` (NOT claimed closed or `PASS`). Under `ym-frontier`
+    (`solidsf.ym_frontier.review_gate.v1`, `allow_hypothesis_binders = True`), `frontier/G05.lean`
+    registers the conditional target theorem for Gate `G05` with its three still-missing
+    non-perturbative 4D $SU(2)$ Haar obligations (`h_G05_partition_pos`,
+    `h_G05_D_singular_toron_haar_collar` for `G05-D`, and `h_G05_E_multiscale_schur_remainder`
+    for `G05-E` / `G05b`) explicitly listed as `OPEN` obligations in `frontier/state.json` and
+    `ym_verify_1_0_gate_status_ledger.json`.
+
+This module states the registered frontier target theorem
+`SolidSF.Frontier.G05.g05_gaussian_backbone_and_harmonic_sector_split` for Gate `G05` on the
+concrete 147-dimensional ($49 \times 3 = 135 + 12$) spanning-tree gauge-fixed 4D $SU(2)$ Wilson
+lattice gauge measure on the $2^4$ periodic hypercubic cell $T^4_2 = (\mathbb{Z}/2\mathbb{Z})^4$:
+
+1. **Concrete 4D $SU(2)$ Wilson Measure on $T^4_2$ (`G05a`):**
+   - $16$ vertices (`Fin 16`), $64$ oriented links (`Fin 64`), and $96$ elementary plaquettes
+     (`Fin 96`) across the $6$ Euclidean coordinate planes $(\mu, \nu)$.
+   - Maximal spanning-tree gauge fixing sets $15$ tree links to $I \in SU(2)$ and maps the $49$
+     fundamental-cycle links (`LinkConfig4D := Fin 49 → Fin 3 → ℝ`) into $SU(2) \cong S^3 \subset \mathbb{R}^4$
+     via the global Cayley-Rodrigues chart `su2CayleyQuat` with unit quaternion norm
+     `(su2CayleyQuat v).normSq = 1` and exact pullback $SU(2)$ Haar density
+     `su2LinkHaarDensity v = 1 / (2 * π^2 * (1 + ‖v‖_2^2 / 4)^3) > 0`.
+   - The $147 = 135 + 12$ real coordinates split orthogonally into the $12\mathrm{D}$ harmonic toron
+     cycle links (`ℓ < 4`, `harmonicToronNormSq12D`) and the $135\mathrm{D}$ transverse non-harmonic
+     plaquette-cycle fiber (`4 ≤ ℓ < 49`, `transverseFiberNormSq135D`).
+
+2. **Connected Proved Sub-Modules (`G05-A..C`, `G05-D1`, `G05-D2`, `G05-D3` — `PARTIAL_SCOPE`):**
+   - Imports and applies `Lemma329` (`G05_D1` 1-loop smooth-toron Hessian coercivity
+     $\langle v, H_{\mathrm{1-loop}}(0) v \rangle \ge \frac{17}{2}\|v\|_2^2$ and $\beta$-uniform
+     determinant oscillation ratio $\frac{16{,}252{,}928}{6{,}561}$),
+   - Imports and applies `Lemma330` (`G05_A..C` & `G05_D2` joint $139\mathrm{D}$ quadratic form
+     coercivity, lifted plaquette curvature-frame projection trace $\mathrm{Tr}(P_{pp}(\theta)) \le 3$,
+     and rational row-sum contraction $q_{\mathrm{row},4D}(3 + u^2, 1) \le \frac{475}{1224} < 1$),
+   - Imports and applies `Lemma333` (`G05_D3` continuous $SU(2)$ Weyl–Haar unit normalization
+     $F_{\mathrm{Haar}}(\pi) - F_{\mathrm{Haar}}(0) = 1$ and $\mathfrak{su}(2)$ Lagrange commutator
+     identity $\|u \times v\|_2^2 + \langle u, v \rangle^2 = \|u\|_2^2 \|v\|_2^2$).
+
+3. **Explicit Term-by-Term Decomposition of `1087 / 1224` & `OPEN` Non-Perturbative Obligations:**
+   - Proved 139D fiber + 1-loop smooth-toron contribution (`Lemma330`):
+     `shiftedFiberRowCovariance blk (3 + u^2) 1 + 2 / (17 * (3 + u^2)^2) ≤ qRow4D (3 + u^2) 1 ≤ 475 / 1224`.
+   - `OPEN` Obligation 1 (`h_G05_partition_pos`): Strict positivity $0 < Z_{\mathrm{Wilson}}(3 + u^2)$
+     of the 147D Bochner partition function `wilsonPartitionFunction147D (3 + u ^ 2)`.
+   - `OPEN` Obligation 2 (`h_G05_D_singular_toron_haar_collar`, `G05_D_EXCEPTIONAL_FIELD_INTEGRATION`):
+     `singularToronCollarDefect4D (3 + u ^ 2) ≤ 1 / 4 = 306 / 1224`.
+   - `OPEN` Obligation 3 (`h_G05_E_multiscale_schur_remainder`, `G05_E_MULTISCALE_CUTOFF_UNIFORM_ESTIMATES` & `G05b`):
+     `multiscaleSchurRemainder4D (3 + u ^ 2) j ≤ 1 / 4 = 306 / 1224`.
+   - Term-by-term sum (`calc` proof in `g05_gaussian_backbone_and_harmonic_sector_split`):
+     `475 / 1224 + 1 / 4 + 1 / 4 = 475 / 1224 + 306 / 1224 + 306 / 1224 = 1087 / 1224 < 1`.
+-/
+
+namespace SolidSF.Frontier.G05
+
+open Real MeasureTheory
+open scoped BigOperators
+open SolidSF.ModularProofs.Lemma329
+open SolidSF.ModularProofs.Lemma330
+open SolidSF.ModularProofs.Lemma333
+
+/-- Concrete quaternion representation of `SU(2) ≅ S³ ⊂ ℝ⁴`. -/
+structure SU2Quat where
+  q0 : ℝ
+  q1 : ℝ
+  q2 : ℝ
+  q3 : ℝ
+
+def SU2Quat.idQuat : SU2Quat := ⟨1, 0, 0, 0⟩
+
+instance instNonemptySU2Quat : Nonempty SU2Quat := ⟨SU2Quat.idQuat⟩
+
+def SU2Quat.normSq (q : SU2Quat) : ℝ :=
+  q.q0 ^ 2 + q.q1 ^ 2 + q.q2 ^ 2 + q.q3 ^ 2
+
+def SU2Quat.conj (q : SU2Quat) : SU2Quat :=
+  ⟨q.q0, -q.q1, -q.q2, -q.q3⟩
+
+def SU2Quat.mul (a b : SU2Quat) : SU2Quat :=
+  ⟨a.q0 * b.q0 - a.q1 * b.q1 - a.q2 * b.q2 - a.q3 * b.q3,
+   a.q0 * b.q1 + a.q1 * b.q0 + a.q2 * b.q3 - a.q3 * b.q2,
+   a.q0 * b.q2 - a.q1 * b.q3 + a.q2 * b.q0 + a.q3 * b.q1,
+   a.q0 * b.q3 + a.q1 * b.q2 - a.q2 * b.q1 + a.q3 * b.q0⟩
+
+theorem SU2Quat.normSq_idQuat : SU2Quat.idQuat.normSq = 1 := by
+  dsimp [SU2Quat.idQuat, SU2Quat.normSq]
+  ring
+
+theorem SU2Quat.normSq_conj (a : SU2Quat) : a.conj.normSq = a.normSq := by
+  dsimp [SU2Quat.conj, SU2Quat.normSq]
+  ring
+
+theorem SU2Quat.normSq_mul (a b : SU2Quat) :
+    (a.mul b).normSq = a.normSq * b.normSq := by
+  dsimp [SU2Quat.mul, SU2Quat.normSq]
+  ring
+
+theorem SU2Quat.one_sub_q0_nonneg_of_normSq_eq_one (q : SU2Quat) (hq : q.normSq = 1) :
+    0 ≤ 1 - q.q0 := by
+  have hsq : q.q0 ^ 2 ≤ 1 := by
+    dsimp [SU2Quat.normSq] at hq
+    nlinarith [sq_nonneg q.q1, sq_nonneg q.q2, sq_nonneg q.q3]
+  nlinarith [sq_nonneg (1 - q.q0)]
+
+/-- Concrete 147D = 49 × 3 spanning-tree gauge-fixed `su(2)` link configuration on `T⁴₂`. -/
+abbrev LinkConfig4D : Type := Fin 49 → Fin 3 → ℝ
+
+def lieVecNormSq (v : Fin 3 → ℝ) : ℝ :=
+  v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2
+
+theorem lieVecNormSq_nonneg (v : Fin 3 → ℝ) : 0 ≤ lieVecNormSq v := by
+  dsimp [lieVecNormSq]
+  positivity
+
+/-- Exact Cayley-Rodrigues diffeomorphism `su(2) ≅ ℝ³ → SU(2) \ {-I} ⊂ S³`. -/
+noncomputable def su2CayleyQuat (v : Fin 3 → ℝ) : SU2Quat :=
+  let d := 1 + lieVecNormSq v / 4
+  ⟨(1 - lieVecNormSq v / 4) / d, v 0 / d, v 1 / d, v 2 / d⟩
+
+theorem su2CayleyQuat_normSq_eq_one (v : Fin 3 → ℝ) :
+    (su2CayleyQuat v).normSq = 1 := by
+  dsimp [su2CayleyQuat, SU2Quat.normSq, lieVecNormSq]
+  have hd : 1 + (v 0 ^ 2 + v 1 ^ 2 + v 2 ^ 2) / 4 ≠ 0 := by positivity
+  field_simp [hd]
+  ring
+
+/-- 147D = 12D harmonic toron (`ℓ < 4`) + 135D transverse fiber (`4 ≤ ℓ < 49`) norm split. -/
+noncomputable def linkNormSq147D (X : LinkConfig4D) : ℝ :=
+  ∑ ℓ : Fin 49, lieVecNormSq (X ℓ)
+
+noncomputable def harmonicToronNormSq12D (X : LinkConfig4D) : ℝ :=
+  ∑ ℓ : Fin 49, if ℓ.val < 4 then lieVecNormSq (X ℓ) else 0
+
+noncomputable def transverseFiberNormSq135D (X : LinkConfig4D) : ℝ :=
+  ∑ ℓ : Fin 49, if ℓ.val < 4 then 0 else lieVecNormSq (X ℓ)
+
+theorem linkNormSq147D_eq_transverse135D_add_toron12D (X : LinkConfig4D) :
+    linkNormSq147D X = transverseFiberNormSq135D X + harmonicToronNormSq12D X := by
+  dsimp [linkNormSq147D, transverseFiberNormSq135D, harmonicToronNormSq12D]
+  rw [← Finset.sum_add_distrib]
+  refine Finset.sum_congr rfl fun ℓ _ => ?_
+  by_cases h : ℓ.val < 4 <;> simp [h]
+
+theorem harmonicToronNormSq12D_nonneg (X : LinkConfig4D) :
+    0 ≤ harmonicToronNormSq12D X := by
+  dsimp [harmonicToronNormSq12D]
+  refine Finset.sum_nonneg fun ℓ _ => ?_
+  by_cases h : ℓ.val < 4
+  · simp [h, lieVecNormSq_nonneg]
+  · simp [h]
+
+/-- Spanning-tree gauge-fixed 64-link assignment on `T⁴₂`: first 15 links in the maximal tree
+    are fixed to `I ∈ SU(2)`, and links `15..63` map to the 49 fundamental cycles. -/
+noncomputable def gaugeFixedLinkQuat (X : LinkConfig4D) (e : Fin 64) : SU2Quat :=
+  if h : e.val < 15 then
+    SU2Quat.idQuat
+  else
+    su2CayleyQuat (X ⟨e.val - 15, by omega⟩)
+
+theorem gaugeFixedLinkQuat_normSq_eq_one (X : LinkConfig4D) (e : Fin 64) :
+    (gaugeFixedLinkQuat X e).normSq = 1 := by
+  dsimp [gaugeFixedLinkQuat]
+  split_ifs with h
+  · exact SU2Quat.normSq_idQuat
+  · exact su2CayleyQuat_normSq_eq_one _
+
+/-- Periodic vertex translation `x + e_μ mod 2` on `T⁴₂ = (ℤ/2ℤ)⁴` (`Fin 16`). -/
+def shiftVertexT4 (x : Fin 16) (μ : Fin 4) : Fin 16 :=
+  ⟨Nat.xor x.val (1 <<< μ.val) % 16, Nat.mod_lt _ (by decide)⟩
+
+/-- Directed link index `(x, μ) ∈ Fin 16 × Fin 4 → Fin 64` on `T⁴₂`. -/
+def linkIndexT4 (x : Fin 16) (μ : Fin 4) : Fin 64 :=
+  ⟨4 * x.val + μ.val, by omega⟩
+
+/-- The 6 coordinate planes `(μ, ν)` with `0 ≤ μ < ν < 4` in 4D Euclidean spacetime. -/
+def planePair4D (k : Fin 6) : Fin 4 × Fin 4 :=
+  match k with
+  | ⟨0, _⟩ => (0, 1)
+  | ⟨1, _⟩ => (0, 2)
+  | ⟨2, _⟩ => (0, 3)
+  | ⟨3, _⟩ => (1, 2)
+  | ⟨4, _⟩ => (1, 3)
+  | ⟨5, _⟩ => (2, 3)
+
+/-- Non-abelian 4-link oriented plaquette holonomy `U_p(X) = U₁ U₂ U₃⁻¹ U₄⁻¹ ∈ SU(2)`
+    for plaquette `p ∈ Fin 96` on `T⁴₂`. -/
+noncomputable def plaquetteHolonomyQuat (X : LinkConfig4D) (p : Fin 96) : SU2Quat :=
+  let x : Fin 16 := ⟨p.val / 6, by omega⟩
+  let plane : Fin 6 := ⟨p.val % 6, Nat.mod_lt _ (by decide)⟩
+  let μ := (planePair4D plane).1
+  let ν := (planePair4D plane).2
+  let u1 := gaugeFixedLinkQuat X (linkIndexT4 x μ)
+  let u2 := gaugeFixedLinkQuat X (linkIndexT4 (shiftVertexT4 x μ) ν)
+  let u3 := (gaugeFixedLinkQuat X (linkIndexT4 (shiftVertexT4 x ν) μ)).conj
+  let u4 := (gaugeFixedLinkQuat X (linkIndexT4 x ν)).conj
+  (u1.mul u2).mul (u3.mul u4)
+
+theorem plaquetteHolonomyQuat_normSq_eq_one (X : LinkConfig4D) (p : Fin 96) :
+    (plaquetteHolonomyQuat X p).normSq = 1 := by
+  dsimp [plaquetteHolonomyQuat]
+  rw [SU2Quat.normSq_mul, SU2Quat.normSq_mul, SU2Quat.normSq_mul,
+    SU2Quat.normSq_conj, SU2Quat.normSq_conj]
+  repeat rw [gaugeFixedLinkQuat_normSq_eq_one]
+  ring
+
+/-- Concrete 96-plaquette 4D `SU(2)` Wilson lattice action on `T⁴₂`:
+    `S_W(β, X) = β ∑_{p ∈ Fin 96} (1 - ½ Re Tr U_p(X))`. -/
+noncomputable def wilsonAction4D (β : ℝ) (X : LinkConfig4D) : ℝ :=
+  β * ∑ p : Fin 96, (1 - (plaquetteHolonomyQuat X p).q0)
+
+theorem wilsonAction4D_nonneg (β : ℝ) (hβ : 0 ≤ β) (X : LinkConfig4D) :
+    0 ≤ wilsonAction4D β X := by
+  dsimp [wilsonAction4D]
+  refine mul_nonneg hβ (Finset.sum_nonneg fun p _ => ?_)
+  exact SU2Quat.one_sub_q0_nonneg_of_normSq_eq_one _ (plaquetteHolonomyQuat_normSq_eq_one X p)
+
+/-- Pullback `SU(2)` Haar probability density `(2π² (1 + ‖v‖²/4)³)⁻¹` on `su(2) ≅ ℝ³`. -/
+noncomputable def su2LinkHaarDensity (v : Fin 3 → ℝ) : ℝ :=
+  1 / (2 * Real.pi ^ 2 * (1 + lieVecNormSq v / 4) ^ 3)
+
+theorem su2LinkHaarDensity_pos (v : Fin 3 → ℝ) : 0 < su2LinkHaarDensity v := by
+  dsimp [su2LinkHaarDensity, lieVecNormSq]
+  positivity
+
+/-- 147D product `SU(2)⁴⁹` Haar density on the 49 fundamental cycle links of `T⁴₂`. -/
+noncomputable def haarVolumeDensity147D (X : LinkConfig4D) : ℝ :=
+  ∏ ℓ : Fin 49, su2LinkHaarDensity (X ℓ)
+
+theorem haarVolumeDensity147D_pos (X : LinkConfig4D) :
+    0 < haarVolumeDensity147D X := by
+  dsimp [haarVolumeDensity147D]
+  exact Finset.prod_pos fun ℓ _ => su2LinkHaarDensity_pos (X ℓ)
+
+/-- Concrete 147D 4D `SU(2)` Wilson-Haar Boltzmann density `exp(-S_W(β, X)) J_Haar(X)`. -/
+noncomputable def wilsonBoltzmannWeight147D (β : ℝ) (X : LinkConfig4D) : ℝ :=
+  Real.exp (-wilsonAction4D β X) * haarVolumeDensity147D X
+
+theorem wilsonBoltzmannWeight147D_pos (β : ℝ) (X : LinkConfig4D) :
+    0 < wilsonBoltzmannWeight147D β X := by
+  dsimp [wilsonBoltzmannWeight147D]
+  exact mul_pos (Real.exp_pos _) (haarVolumeDensity147D_pos X)
+
+/-- Concrete 147D 4D `SU(2)` Wilson-Haar partition function on `ℝ¹⁴⁷`. -/
+noncomputable def wilsonPartitionFunction147D (β : ℝ) : ℝ :=
+  ∫ X : LinkConfig4D, wilsonBoltzmannWeight147D β X
+
+/-- Concrete 147D Gaussian-backbone + 1-loop toron reference weight at RG step `j`. -/
+noncomputable def gaussianBackboneOneLoopWeight147D (β : ℝ) (j : ℕ) (X : LinkConfig4D) : ℝ :=
+  Real.exp (-((7 / 100) * (β - j) ^ 2 * transverseFiberNormSq135D X +
+    (17 / 2) * harmonicToronNormSq12D X)) * haarVolumeDensity147D X
+
+/-- `G05-D`: Non-perturbative 4D `SU(2)` Haar expectation of the 12D singular commuting-toron
+    collar fluctuation on the gauge-fixed `2⁴` cell. -/
+noncomputable def singularToronCollarDefect4D (β : ℝ) : ℝ :=
+  (∫ X : LinkConfig4D, harmonicToronNormSq12D X * wilsonBoltzmannWeight147D β X) /
+    ((1 + β ^ 2) * wilsonPartitionFunction147D β)
+
+/-- `G05-E`: Non-perturbative `j`-step RG Schur-complement and smooth-cutoff `L¹` density
+    remainder between the interacting 4D `SU(2)` Wilson measure and the Gaussian backbone. -/
+noncomputable def multiscaleSchurRemainder4D (β : ℝ) (j : ℕ) : ℝ :=
+  (∫ X : LinkConfig4D,
+    |wilsonBoltzmannWeight147D β X - gaussianBackboneOneLoopWeight147D β j X|) /
+    wilsonPartitionFunction147D β
+
+/-- `G05b`: Full non-perturbative 4D `SU(2)` weighted block-influence row-sum combining the
+    135D transverse fiber covariance, 1-loop smooth-toron inverse Hessian, singular commuting-toron
+    Haar collar defect (`G05-D`), and multiscale Schur-complement remainder (`G05-E`). -/
+noncomputable def nonperturbativeWeightedRowSum4D
+    (blk : PlaquetteProjectionBlock3D) (β : ℝ) (j : ℕ) : ℝ :=
+  shiftedFiberRowCovariance blk β 1 + 2 / (17 * β ^ 2) +
+    singularToronCollarDefect4D β + multiscaleSchurRemainder4D β j
+
+theorem singularToronCollarDefect4D_nonneg_of_partition_pos
+    (β : ℝ) (hZ : 0 < wilsonPartitionFunction147D β) :
+    0 ≤ singularToronCollarDefect4D β := by
+  dsimp [singularToronCollarDefect4D]
+  have hnum : 0 ≤ ∫ X : LinkConfig4D, harmonicToronNormSq12D X * wilsonBoltzmannWeight147D β X := by
+    refine integral_nonneg fun X => mul_nonneg (harmonicToronNormSq12D_nonneg X) ?_
+    exact le_of_lt (wilsonBoltzmannWeight147D_pos β X)
+  have hden : 0 ≤ (1 + β ^ 2) * wilsonPartitionFunction147D β := by
+    exact mul_nonneg (by positivity) (le_of_lt hZ)
+  exact div_nonneg hnum hden
+
+theorem multiscaleSchurRemainder4D_nonneg_of_partition_pos
+    (β : ℝ) (j : ℕ) (hZ : 0 < wilsonPartitionFunction147D β) :
+    0 ≤ multiscaleSchurRemainder4D β j := by
+  dsimp [multiscaleSchurRemainder4D]
+  have hnum : 0 ≤ ∫ X : LinkConfig4D,
+      |wilsonBoltzmannWeight147D β X - gaussianBackboneOneLoopWeight147D β j X| :=
+    integral_nonneg fun _ => abs_nonneg _
+  exact div_nonneg hnum (le_of_lt hZ)
+
+/-- Target Theorem for Gate `G05` (`Gaussian Backbone Extraction (with G05-A..E Harmonic-Sector Split)`):
+    On the concrete 147D = 135D ⊕ 12D spanning-tree gauge-fixed 4D `SU(2)` Wilson measure on `T⁴₂`,
+    given positivity of the 147D Wilson-Haar partition function (`h_G05_partition_pos`),
+    the non-perturbative singular commuting-toron Haar collar bound (`h_G05_D_singular_toron_haar_collar`),
+    and the multiscale Schur-complement cutoff remainder bound (`h_G05_E_multiscale_schur_remainder`),
+    the 147D harmonic-sector split (`G05a`), joint 139D Gaussian backbone + 1-loop smooth-toron
+    coercivity (`G05-A..C`, `G05-D1`), continuous `SU(2)` Weyl-Haar & normal-bundle commutator
+    identities (`G05-D3`), and uniform 4D weighted block-influence row-sum contraction
+    `0 ≤ Q_{row,full} ≤ 1087 / 1224 < 1` (`G05-D2`, `G05-D`, `G05-E`, `G05b`) hold simultaneously. -/
+theorem g05_gaussian_backbone_and_harmonic_sector_split
+    (X : LinkConfig4D)
+    (w : JointBackbone139D)
+    (blk : PlaquetteProjectionBlock3D)
+    (P : ToronNormalCollarPair)
+    (u : ℝ)
+    (j : ℕ)
+    (h_G05_partition_pos : 0 < wilsonPartitionFunction147D (3 + u ^ 2))
+    (h_G05_D_singular_toron_haar_collar : singularToronCollarDefect4D (3 + u ^ 2) ≤ 1 / 4)
+    (h_G05_E_multiscale_schur_remainder : multiscaleSchurRemainder4D (3 + u ^ 2) j ≤ 1 / 4) :
+    (linkNormSq147D X = transverseFiberNormSq135D X + harmonicToronNormSq12D X ∧
+      0 ≤ wilsonAction4D (3 + u ^ 2) X ∧
+      0 < wilsonBoltzmannWeight147D (3 + u ^ 2) X) ∧
+    ((7 / 100) * (3 + u ^ 2) ^ 2 * w.fiberNormSq + (17 / 2) * w.toronNormSq ≤
+        jointBackboneQuadraticForm139D (3 + u ^ 2) w ∧
+      detAntiperiodicScalarLaplacian45D / detUntwistedScalarLaplacian45D =
+        betaUniformOneLoopOscillationRatio) ∧
+    (su2WeylHaarAntideriv Real.pi - su2WeylHaarAntideriv 0 = 1 ∧
+      lieSu2NormSq (lieSu2Cross P.u P.v) + (lieSu2Dot P.u P.v) ^ 2 =
+        lieSu2NormSq P.u * lieSu2NormSq P.v) ∧
+    (0 ≤ nonperturbativeWeightedRowSum4D blk (3 + u ^ 2) j ∧
+      nonperturbativeWeightedRowSum4D blk (3 + u ^ 2) j ≤ 1087 / 1224 ∧
+      nonperturbativeWeightedRowSum4D blk (3 + u ^ 2) j < 1) := by
+  have hβ_nonneg : 0 ≤ 3 + u ^ 2 := by positivity
+  have h_split := linkNormSq147D_eq_transverse135D_add_toron12D X
+  have h_act := wilsonAction4D_nonneg (3 + u ^ 2) hβ_nonneg X
+  have h_boltz := wilsonBoltzmannWeight147D_pos (3 + u ^ 2) X
+  have h_coercive := jointBackboneQuadraticForm139D_coercive (3 + u ^ 2) w
+  have h_osc := detAntiperiodic_div_detUntwisted_eq_betaUniformRatio
+  have h_haar := (hasDerivAt_su2WeylHaarAntideriv_and_unit_mass 0).2
+  have h_lagrange := (lieSu2CrossNormSq_lagrange_and_orthog P.u P.v).1
+  have h_trace_nonneg : 0 ≤ shiftedFiberRowCovariance blk (3 + u ^ 2) 1 := by
+    dsimp [shiftedFiberRowCovariance]
+    exact div_nonneg (plaquetteProjectionBlock3D_trace_bounds blk).1 (by positivity)
+  have h_toron_nonneg : 0 ≤ (2 : ℝ) / (17 * (3 + u ^ 2) ^ 2) := by positivity
+  have h_sing_nonneg :=
+    singularToronCollarDefect4D_nonneg_of_partition_pos (3 + u ^ 2) h_G05_partition_pos
+  have h_rem_nonneg :=
+    multiscaleSchurRemainder4D_nonneg_of_partition_pos (3 + u ^ 2) j h_G05_partition_pos
+  have h_row_139 := (joint139DRowCovariance_lt_one blk u).1
+  have h_qrow := (qRow4D_unit_source_all_scale_contraction u).1
+  have h_fib_plus_toron :
+      shiftedFiberRowCovariance blk (3 + u ^ 2) 1 + 2 / (17 * (3 + u ^ 2) ^ 2) ≤ 475 / 1224 :=
+    le_trans h_row_139 h_qrow
+  have h_row_nonneg : 0 ≤ nonperturbativeWeightedRowSum4D blk (3 + u ^ 2) j := by
+    dsimp [nonperturbativeWeightedRowSum4D]
+    linarith [h_trace_nonneg, h_toron_nonneg, h_sing_nonneg, h_rem_nonneg]
+  have h_row_le : nonperturbativeWeightedRowSum4D blk (3 + u ^ 2) j ≤ 1087 / 1224 := by
+    dsimp [nonperturbativeWeightedRowSum4D]
+    calc
+      shiftedFiberRowCovariance blk (3 + u ^ 2) 1 + 2 / (17 * (3 + u ^ 2) ^ 2) +
+          singularToronCollarDefect4D (3 + u ^ 2) + multiscaleSchurRemainder4D (3 + u ^ 2) j
+        ≤ 475 / 1224 + 1 / 4 + 1 / 4 := by
+          linarith [h_fib_plus_toron, h_G05_D_singular_toron_haar_collar,
+            h_G05_E_multiscale_schur_remainder]
+      _ = 1087 / 1224 := by norm_num
+  have h_row_lt_one : nonperturbativeWeightedRowSum4D blk (3 + u ^ 2) j < 1 := by
+    linarith [h_row_le]
+  exact ⟨⟨h_split, h_act, h_boltz⟩, ⟨h_coercive, h_osc⟩, ⟨h_haar, h_lagrange⟩,
+    ⟨h_row_nonneg, h_row_le, h_row_lt_one⟩⟩
+
+#print axioms g05_gaussian_backbone_and_harmonic_sector_split
+#print axioms wilsonAction4D_nonneg
+#print axioms singularToronCollarDefect4D_nonneg_of_partition_pos
+#print axioms multiscaleSchurRemainder4D_nonneg_of_partition_pos
+
+end SolidSF.Frontier.G05

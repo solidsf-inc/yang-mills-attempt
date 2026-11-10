@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this archive, please cite it as below."
+title: "Toward a Proof of the Yang-Mills Existence and Mass Gap Problem - The Wilson Lattice Measure in Lean 4: Established Results and Open Obligations"
+version: 1.0.0
+date-released: 2026-11-09
+doi: "10.5281/zenodo.24095337"
+license: Apache-2.0
+authors:
+  - name: "solidSF Research Team"
+    affiliation: "solidSF, Inc."
